@@ -1,0 +1,37 @@
+{
+  "name": "@auzmartist/hybrids-helpers",
+  "version": "0.1.0",
+  "main": "./dist/hybrids-helpers.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/hybrids-helpers.es.js",
+      "require": "./dist/hybrids-helpers.umd.js"
+    }
+  },
+  "files": ["README.md", "package.json", "dist/**/*"],
+  "types": "./dist/types",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:analyze": "tsc && vite build --mode analyze",
+    "prepublishonly": "pnpm build",
+    "test": "vitest test"
+  },
+  "dependencies": {
+    "hybrids": "^8.0.8"
+  },
+  "peerDependencies": {
+    "hybrids": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4",
+    "vite": "^2.9.13",
+    "vitest": "^0.16.0",
+    "rollup-plugin-analyzer": "^4.0.0"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": ["rollup"]
+    }
+  }
+}
