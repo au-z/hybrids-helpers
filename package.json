@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "./dist/hybrids-helpers.umd.js",
   "exports": {
     ".": {
@@ -18,7 +18,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:analyze": "tsc && vite build --mode analyze",
-    "prepublishonly": "pnpm build",
+    "prepublishOnly": "pnpm build",
     "test": "vitest test"
   },
   "dependencies": {
