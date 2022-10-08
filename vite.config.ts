@@ -20,6 +20,9 @@ export default defineConfig((env) => {
     },
     plugins: [
       mode === 'analyze' && analyzer({limit: 100, hideDeps: true}),
-    ]
+    ],
+    test: {
+      environment: 'happy-dom',
+    },
   }
 })
