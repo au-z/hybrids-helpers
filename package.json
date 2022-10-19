@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "./dist/hybrids-helpers.umd.js",
   "exports": {
     ".": {

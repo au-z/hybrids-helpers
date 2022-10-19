@@ -36,9 +36,19 @@ export const prop = <E, V>(property: Property<E, V>, observe?: Descriptor<E, V>[
  * Create a readable/writable property sans attribute reflection
  * @param defaultValue the default getter value
  */
-export const getset = <E, V>(defaultValue: V): Property<E, V> => ({
+export const getset = <E, V>(defaultValue: V = undefined): Property<E, V> => ({
   get: (_, val = defaultValue) => val,
   set: (_, val) => val,
+})
+
+/**
+ * Set a writeable property
+ * @param defaultValue the default attribute value
+ * @param setter a hook into the setter
+ * @returns a Descriptor
+ */
+export const set = <E, V>(defaultValue: V, setter: Descriptor<E, V>['set']): Descriptor<E, V> => ({
+  set: (host, val = defaultValue, last) => setter(host, val, last)
 })
 
 /**
