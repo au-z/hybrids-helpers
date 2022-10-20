@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "main": "./dist/hybrids-helpers.umd.js",
   "exports": {
     ".": {
@@ -22,10 +22,12 @@
     "test": "vitest test"
   },
   "dependencies": {
-    "hybrids": "^8.0.8"
+    "hybrids": "^8.0.8",
+    "redux": "^4.2.0"
   },
   "peerDependencies": {
-    "hybrids": "^8.0.0"
+    "hybrids": "^8.0.0",
+    "redux": "^4.2.0"
   },
   "devDependencies": {
     "happy-dom": "^7.4.0",

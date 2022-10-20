@@ -1,4 +1,5 @@
 export * from './factories'
+export * from './redux'
 export * from './property'
 export * from './render'
 export * from './interfaces'
