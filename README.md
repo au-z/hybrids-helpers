@@ -50,3 +50,6 @@ pnpm i @auzmartist/hybrids-helpers
 
 ## Documentation
 
+```bash
+pnpm docs:preview
+```

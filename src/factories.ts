@@ -11,8 +11,7 @@ export interface ContentElement<T> extends HTMLElement {
 }
 
 /**
- * Wrap a Property with a custom observer.
- * If an 'observe' Descriptor property is already defined, observe will be run after.
+ * Wrap a Property with a custom observer. If an 'observe' Descriptor property is already defined, observe will be run after.
  * @param defaultValue the default property value
  */
 export const prop = <E, V>(property: Property<E, V>, observe?: Descriptor<E, V>['observe']): Property<E, V> => {
@@ -33,44 +32,84 @@ export const prop = <E, V>(property: Property<E, V>, observe?: Descriptor<E, V>[
 }
 
 /**
- * Create a readable/writable property sans attribute reflection
- * @param defaultValue the default getter value
+ * Create a read/write property sans attribute reflection. Can be helpful for managing exposed attributes or creating properties with complex data types.
+ * ```
+ * define({
+ *   array: getset([]),
+ *   _privateStr: getset(''),
+ * })
+ * ```
+ * @category Descriptors
+ * @typeParam E - host element type
+ * @typeParam V - property value type
+ * @param defaultValue the default value
+ * @returns a Hybrids Descriptor
+ * @see https://hybrids.js.org/#/component-model/structure?id=get-amp-set
  */
-export const getset = <E, V>(defaultValue: V = undefined): Property<E, V> => ({
+export const getset = <E, V>(defaultValue: V = undefined): Descriptor<E, V> => ({
   get: (_, val = defaultValue) => val,
   set: (_, val) => val,
 })
 
 /**
- * Set a writeable property
+ * Set a writeable property.
+ * ```
+ * define({
+ *   attr: set(''),
+ *   capsAttr: set('', (host, set) => set.toUpperCase()),
+ * })
+ * ```
+ * @category Descriptors
  * @param defaultValue the default attribute value
  * @param setter a hook into the setter
  * @returns a Descriptor
+ * @see https://hybrids.js.org/#/component-model/structure?id=get-amp-set
  */
 export const set = <E, V>(defaultValue: V, setter: Descriptor<E, V>['set']): Descriptor<E, V> => ({
   set: (host, val = defaultValue, last) => setter(host, val, last)
 })
 
 /**
- * Gets a reference to an element in the shadowDOM.
- * This property cannot be used during render to prevent circular references.
+ * Gets a reference to an element in the shadowDOM. This property cannot be used during render to prevent circular references.
+ * ```
+ * define({
+ *   canvas: ref('canvas.container'),
+ *   render: () => html`
+ *     <canvas class="container"></canvas>
+ *   `,
+ * })
+ * ```
+ * @category Descriptors
  * @param query the querySelector query
  * @returns a reference to an element in the shadowDOM
  */
-export const ref = <E extends RenderElement<E>, Element>(query: string): Property<E, Element> => ({
-  get: ({ render }: E & any) => render().querySelector(query),
+export const ref = <E extends RenderElement<E>, T = Element>(query: string): Descriptor<E, T> => ({
+  get: ({ render }: E & {render}) => render().querySelector(query),
 })
 
-/// Descriptor.connect ///
-
 /**
- * A factory handling a Disposable object.
- * The disposed return value is assigned when removed from the DOM.
+ * A factory handling a Disposable object. The disposed return value is assigned when removed from the DOM.
+ * ```
+ * define<any>({
+ *   disposableClass: disposable((host) => MyClass),
+ *   disposableFunction: disposable((host) => BarFoo),
+ * })
+ * 
+ * class MyClass implements Disposable { ... }
+ * 
+ * function BarFoo() {
+ *   return { dispose: ... }
+ * }
+ * ```
+ * @category Descriptors
+ * @typeParam E - host element type
+ * @typeParam V - property type which extends Disposable
  * @param connector creates a Disposable constructor
  * @param ondisconnect to be run when the element is disconnected
  * @returns a disposable handler Hybrids property
+ * @see /interfaces/Disposable.html
  */
-export const disposable = <E, V extends Disposable>(connector: (
+ export const disposable = <E, V extends Disposable>(connector: (
   host: E & HTMLElement & { __property_key__: V },
   key: "__property_key__",
   invalidate: (options?: { force?: boolean }) => void,
@@ -87,24 +126,81 @@ export const disposable = <E, V extends Disposable>(connector: (
   },
 })
 
+/// Descriptor.connect ///
+
+/**
+ * Listen to a map of events. Handlaes listener registration and deregistration.
+ * ```
+ * define<any>({
+ *   foo: 0,
+ *   incrementFoo: (host) => (e) => host.foo++,
+ *   _connect: {
+ *   	 value: undefined,
+ *   	 connect: listen((host: any) => ({
+ *   	  'foo': host.incrementFoo,
+ *   	 }))
+ *   }
+ * })
+ * ```
+ * @category Connectors
+ * @typeParam E - host element type
+ * @param eventMapFn a function returning a record of events and bound functions to listen
+ * @returns A Descriptor['connect'] function
+ */
+export function listen<E extends HTMLElement>(eventMapFn: (host: E) => Record<string, ((e: Event) => void)>): NonNullable<Descriptor<E, any>['connect']> {
+  return (host: E) => {
+    const eventMap = eventMapFn(host)
+    Object.entries(eventMap).forEach(([event, callback]) => {
+      host.addEventListener(event, callback)
+    })
+    return () => {
+      Object.entries(eventMap).forEach(([event, callback]) => {
+        host.removeEventListener(event, callback)
+      })
+    }
+  }
+}
+
 /// Descriptor.observe ///
 
 /**
  * An observer executing each passed observer in sequence
- * @param observers
+ * ```
+ * define<MyElement>({
+ *   color: {
+ *     value: 'red',
+ *     observe: forEach(
+ *       cssVar('--my-element-color'),
+ *       cssVar('--my-element-color-complement', (val, host) => complementaryColor(value)),
+ *     ),
+ *   },
+ * })
+ * ```
+ * @typeParam E - host element type
+ * @typeParam V - property value type
+ * @param observers a list of 'observe' Descriptor functions to execute
+ * @returns An 'observe' Descriptor function
  */
-export const forEach = <E, V>(...observers: Descriptor<E, V>['observe'][]): Descriptor<E, V>['observe'] =>
+export const forEach = <E, V>(...observers: Descriptor<E, V>['observe'][]): NonNullable<Descriptor<E, V>['observe']> =>
   (host: E & HTMLElement, val: V, last: V) => observers.forEach((observe) => observe(host, val, last))
 
 /**
- * An observer which sets a custom CSS property on the host element
- * @param variableName CSS property name
- * @param transform a function converting the JS to CSS value
+ * An observer which reflects the current property value to a custom CSS property on the host element.
+ * ```
+ * define<MyElement>({
+ *   color: { value: 'red', observe: cssVar('--my-element-color') },
+ * })
+ * ```
+ * @typeParam E - host element type
+ * @typeParam V - property value type
+ * @param customProperty CSS custom property name
+ * @param transform am optional function converting the JS to CSS value
+ * @returns An 'observe' Descriptor function
  */
 export const cssVar = <E, V>(
-  variableName: string,
+  customProperty: string,
   transform: (val: V, host: E) => any = (val) => val
-): Descriptor<E, V>['observe'] =>
+): NonNullable<Descriptor<E, V>['observe']> =>
   (host: E & HTMLElement, val: V) => {
-    host.style.setProperty(variableName, transform(val, host))
+    host.style.setProperty(customProperty, transform(val, host))
   }
