@@ -204,3 +204,32 @@ export const cssVar = <E, V>(
   (host: E & HTMLElement, val: V) => {
     host.style.setProperty(customProperty, transform(val, host))
   }
+
+/**
+ * Runs the observe function only when the current value is non-nullish.
+ * ```
+ * define({
+ *   property: {
+ *     ...getset(undefined),
+ *     observe: nnull(cssVar(--custom-property)),
+ *   },
+ * })
+ * ```
+ * @typeParam E - host element type
+ * @typeParam V - property value type
+ * @param observe 'observe' function to execute when the value is truthy
+ * @param nullCallback optional 'observe' function when the value is null
+ * @returns an 'observe' Descriptor
+ */
+export function nnull<E extends HTMLElement, V>(
+  observe: Descriptor<E, V>['observe'],
+  nullCallback?: Descriptor<E, V>['observe'],
+): NonNullable<Descriptor<E, V>['observe']> {
+  return (host: E, value: V, last: V | undefined) => {
+    if(value != null) {
+      observe(host, value, last)
+    } else {
+      nullCallback?.(host, value, last)
+    }
+  }
+}
