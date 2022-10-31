@@ -217,8 +217,8 @@ export const cssVar = <E, V>(
  * ```
  * @typeParam E - host element type
  * @typeParam V - property value type
- * @param observe 'observe' function to execute when the value is truthy
- * @param nullCallback optional 'observe' function when the value is null
+ * @param observe 'observe' function to execute when the value is not null or undefined
+ * @param nullCallback optional 'observe' function when the value is nullish
  * @returns an 'observe' Descriptor
  */
 export function nnull<E extends HTMLElement, V>(
@@ -230,6 +230,35 @@ export function nnull<E extends HTMLElement, V>(
       observe(host, value, last)
     } else {
       nullCallback?.(host, value, last)
+    }
+  }
+}
+
+/**
+ * Runs the observe function only when the current value is truthy.
+ * ```
+ * define({
+ *   property: {
+ *     ...getset(''), // will not run on initial set
+ *     observe: truthy(cssVar(--custom-property), (_, val) => console.log('FALSY', val)),
+ *   },
+ * })
+ * ```
+ * @typeParam E - host element type
+ * @typeParam V - property value type
+ * @param observe 'observe' function to execute when the value is truthy
+ * @param nullCallback optional 'observe' function when the value is falsy
+ * @returns an 'observe' Descriptor
+ */
+export function truthy<E extends HTMLElement, V>(
+  observe: Descriptor<E, V>['observe'],
+  falsyCallback?: Descriptor<E, V>['observe'],
+): NonNullable<Descriptor<E, V>['observe']> {
+  return (host: E, value: V, last: V | undefined) => {
+    if(value) {
+      observe(host, value, last)
+    } else {
+      falsyCallback?.(host, value, last)
     }
   }
 }

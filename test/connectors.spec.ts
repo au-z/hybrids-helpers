@@ -1,7 +1,7 @@
 import {define} from 'hybrids'
 import {describe, it, expect} from 'vitest'
 import { listen } from '../src'
-import {test} from './utils'
+import {setup} from './utils'
 
 describe('Hybrids connectors', () => {
 	describe('listen', () => {
@@ -21,9 +21,9 @@ describe('Hybrids connectors', () => {
 		})
 
 
-		const tree = test(`<div>
+		const tree = setup(`<div>
 			<test-listener></test-listener>
-		<div>`)
+		<div>`).tree
 
 		it('initializes event listener', tree((div) => {
 			const el = div.children[0]

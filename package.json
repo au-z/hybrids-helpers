@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "type": "module",
   "main": "./dist/hybrids-helpers.umd.js",
   "module": "./dist/hybrids-helpers.es.js",
@@ -20,8 +20,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:analyze": "tsc && vite build --mode analyze",
-    "prepublishOnly": "pnpm build && pnpm docgen",
+    "prepublishOnly": "pnpm build && pnpm test:once && pnpm docgen",
     "test": "vitest test",
+    "test:once": "vitest run test",
     "docgen": "typedoc --out docs src/index.ts",
     "docs:preview": "pnpm docgen && pnpm dlx http-server --open -p 10000 ./docs"
   },

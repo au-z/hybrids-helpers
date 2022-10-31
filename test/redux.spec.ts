@@ -2,7 +2,7 @@ import {define} from 'hybrids'
 import {AnyAction, createStore, Store} from 'redux'
 import {describe, it, expect, beforeAll} from 'vitest'
 import {redux} from '../src/redux'
-import {test} from './utils'
+import {setup} from './utils'
 
 describe('redux factories', () => {
   const {store} = testStore({value: 'foobar'}, {
@@ -17,7 +17,7 @@ describe('redux factories', () => {
       })
     })
 
-    const tree = test(`<test-redux></test-redux>`)
+    const tree = setup(`<test-redux></test-redux>`).tree
 
     it('reflects the value in the store', tree((el) => {
       expect(el.value).toBe('foobar')

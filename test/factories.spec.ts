@@ -1,7 +1,8 @@
 import { define } from 'hybrids'
+import { test } from 'vitest'
 import {describe, it, expect, beforeAll} from 'vitest'
-import {disposable, Disposable, getset} from '../src'
-import { test } from './utils'
+import {disposable, Disposable, getset, truthy} from '../src'
+import { setup, tick } from './utils'
 
 describe('factories', () => {
   describe('getset', () => {
@@ -33,9 +34,9 @@ describe('factories', () => {
       })
     })
 
-    const tree = test(`<div>
+    const tree = setup(`<div>
       <test-disposable></test-disposable>
-    </div>`)
+    </div>`).tree
 
     it('wraps a disposable class', tree((dom) => {
       const el = dom.children[0]
@@ -55,6 +56,32 @@ describe('factories', () => {
       // replaces itself when removed from the DOM
       dom.removeChild(el);
       expect(el.disposableFunction).toBe('disposed');
+    }))
+  })
+
+  describe('truthy observer', () => {
+    define<any>({
+      tag: 'my-test',
+      value: {
+        value: 0,
+        observe: truthy((host, val) => host.division = 10 / val)
+      },
+      division: 1,
+    })
+    const tree = setup(`<my-test></my-test>`).tree
+
+    test('only divides by truthy values', tree(async (el) => {
+      expect(el.value).toBe(0)
+      expect(el.division).toBe(1)
+      await tick()
+      expect(el.division).toBe(1)
+      el.value = 0.5
+      await tick()
+      expect(el.division).toBe(20)
+      el.value = undefined // sets NaN
+      await tick()
+      expect(el.value).toBe(NaN)
+      expect(el.division).toBe(20)
     }))
   })
 })
