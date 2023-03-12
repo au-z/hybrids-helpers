@@ -6,10 +6,6 @@ export interface RenderElement<T> extends HTMLElement {
   render: UpdateFunctionWithMethods<T>
 }
 
-export interface ContentElement<T> extends HTMLElement {
-  render: UpdateFunctionWithMethods<T>
-}
-
 /**
  * Wrap a Property with a custom observer. If an 'observe' Descriptor property is already defined, observe will be run after.
  * @param defaultValue the default property value
@@ -83,8 +79,8 @@ export const set = <E, V>(defaultValue: V, setter: Descriptor<E, V>['set']): Des
  * @param query the querySelector query
  * @returns a reference to an element in the shadowDOM
  */
-export const ref = <E extends RenderElement<E>, T = Element>(query: string): Descriptor<E, T> => ({
-  get: ({ render }: E & {render}) => render().querySelector(query),
+export const ref = <E, T extends Element = Element>(query: string): Descriptor<E, T> => ({
+  get: ({ render }: E & HTMLElement & {render}) => render().querySelector(query),
 })
 
 /**
@@ -129,7 +125,7 @@ export const ref = <E extends RenderElement<E>, T = Element>(query: string): Des
 /// Descriptor.connect ///
 
 /**
- * Listen to a map of events. Handlaes listener registration and deregistration.
+ * Listen to a map of events. Handles listener registration and deregistration.
  * ```
  * define<any>({
  *   foo: 0,
@@ -147,8 +143,8 @@ export const ref = <E extends RenderElement<E>, T = Element>(query: string): Des
  * @param eventMapFn a function returning a record of events and bound functions to listen
  * @returns A Descriptor['connect'] function
  */
-export function listen<E extends HTMLElement>(eventMapFn: (host: E) => Record<string, ((e: Event) => void)>): NonNullable<Descriptor<E, any>['connect']> {
-  return (host: E) => {
+export function listen<E>(eventMapFn: (host: E) => Record<string, ((e: Event) => void)>): NonNullable<Descriptor<E, any>['connect']> {
+  return (host: E & HTMLElement) => {
     const eventMap = eventMapFn(host)
     Object.entries(eventMap).forEach(([event, callback]) => {
       host.addEventListener(event, callback)
@@ -221,11 +217,11 @@ export const cssVar = <E, V>(
  * @param nullCallback optional 'observe' function when the value is nullish
  * @returns an 'observe' Descriptor
  */
-export function nnull<E extends HTMLElement, V>(
+export function nnull<E, V>(
   observe: Descriptor<E, V>['observe'],
   nullCallback?: Descriptor<E, V>['observe'],
 ): NonNullable<Descriptor<E, V>['observe']> {
-  return (host: E, value: V, last: V | undefined) => {
+  return (host: E & HTMLElement, value: V, last: V | undefined) => {
     if(value != null) {
       observe(host, value, last)
     } else {
@@ -240,7 +236,7 @@ export function nnull<E extends HTMLElement, V>(
  * define({
  *   property: {
  *     ...getset(''), // will not run on initial set
- *     observe: truthy(cssVar(--custom-property), (_, val) => console.log('FALSY', val)),
+ *     observe: truthy(cssVar(--custom-property)),
  *   },
  * })
  * ```
@@ -250,11 +246,11 @@ export function nnull<E extends HTMLElement, V>(
  * @param nullCallback optional 'observe' function when the value is falsy
  * @returns an 'observe' Descriptor
  */
-export function truthy<E extends HTMLElement, V>(
+export function truthy<E, V>(
   observe: Descriptor<E, V>['observe'],
   falsyCallback?: Descriptor<E, V>['observe'],
 ): NonNullable<Descriptor<E, V>['observe']> {
-  return (host: E, value: V, last: V | undefined) => {
+  return (host: E & HTMLElement, value: V, last: V | undefined) => {
     if(value) {
       observe(host, value, last)
     } else {

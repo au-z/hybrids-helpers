@@ -2,8 +2,7 @@ import {defineConfig} from 'vite'
 import analyzer from 'rollup-plugin-analyzer'
 import { dependencies } from './package.json'
 
-export default defineConfig((env) => {
-  const mode = env.mode
+export default defineConfig(({mode}) => {
 
   return {
     build: {
@@ -15,7 +14,7 @@ export default defineConfig((env) => {
       rollupOptions: {
         external: [
           ...Object.keys(dependencies || {}).map((pkg) => new RegExp(`^${pkg}(/.*)?`))
-        ],
+        ]
       }
     },
     plugins: [

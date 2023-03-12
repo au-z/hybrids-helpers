@@ -1,5 +1,5 @@
 import { Descriptor } from "hybrids"
-import { Store } from "redux"
+import { Store as R } from "redux"
 
 /**
  * Select an portion of a Redux store
@@ -9,13 +9,13 @@ import { Store } from "redux"
  * @param observe an optional 'observe' Descriptor function
  * @returns a Descriptor getting a piece of the store
  */
-export function redux<E, V, S>(
-  store: Store<S>,
-  getter: (host: E, state: S) => V,
+export function redux<E, V, State, Store extends R<State> = R<State>>(
+  store: Store,
+  getter: (host: E, state: State) => V,
   connect?: Descriptor<E, V>['connect'],
   observe?: Descriptor<E, V>['observe']
 ): Descriptor<E, V> {
-  const get = (host) => (getter ? getter(host, store.getState()) : <V>(<unknown>store.getState()))
+  const get = (host: E & HTMLElement) => (getter ? getter(host, store.getState()) : <V>(<unknown>store.getState()))
 
   return {
     get,
