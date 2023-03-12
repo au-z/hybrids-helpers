@@ -2,12 +2,13 @@
   "name": "@auzmartist/hybrids-helpers",
   "version": "0.3.5",
   "type": "module",
-  "main": "./dist/hybrids-helpers.umd.js",
-  "module": "./dist/hybrids-helpers.es.js",
+  "main": "./dist/hybrids-helpers.umd.cjs",
+  "module": "./dist/hybrids-helpers.js",
   "exports": {
     ".": {
-      "import": "./dist/hybrids-helpers.es.js",
-      "require": "./dist/hybrids-helpers.umd.js"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/hybrids-helpers.js",
+      "require": "./dist/hybrids-helpers.umd.cjs"
     }
   },
   "files": [
