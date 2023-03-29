@@ -14,8 +14,9 @@ export default defineConfig(({mode}) => {
       rollupOptions: {
         external: [
           ...Object.keys(dependencies || {}).map((pkg) => new RegExp(`^${pkg}(/.*)?`))
-        ]
-      }
+        ],
+      },
+      sourcemap: true
     },
     plugins: [
       mode === 'analyze' && analyzer({limit: 100, hideDeps: true}),

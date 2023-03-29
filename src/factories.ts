@@ -1,6 +1,6 @@
 import { Descriptor, Property, UpdateFunctionWithMethods } from 'hybrids'
-import { Disposable, Fn, Type } from './interfaces'
-import { isClass } from './utils'
+import { Disposable, Fn, Type } from './interfaces.js'
+import { isClass } from './utils.js'
 
 export interface RenderElement<T> extends HTMLElement {
   render: UpdateFunctionWithMethods<T>
