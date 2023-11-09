@@ -1,15 +1,18 @@
-import { Descriptor } from "hybrids"
-import { Store as R } from "redux"
+import { Descriptor } from 'hybrids'
 
+type ReduxStore<T> = {
+  getState: () => T
+  subscribe: (listener: () => void) => () => void
+}
 /**
- * Select an portion of a Redux store
+ * Select an portion of a redux store
  * @param store the store to reactively get a value from
  * @param getter a function selecting something from the store
  * @param connect an optional 'connect' Descriptor function
  * @param observe an optional 'observe' Descriptor function
  * @returns a Descriptor getting a piece of the store
  */
-export function redux<E, V, State, Store extends R<State> = R<State>>(
+export function redux<E, V, State, Store extends ReduxStore<State> = ReduxStore<State>>(
   store: Store,
   getter: (host: E, state: State) => V,
   connect?: Descriptor<E, V>['connect'],

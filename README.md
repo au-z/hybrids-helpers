@@ -1,11 +1,14 @@
 # hybrids-helpers
+
 > Helper factories and functions for [Hybrids](https://hybrids.js.org/#/) Web Components.
 
 ## Motivation
+
 For larger projects, Hybrids' delightfully simple API and terse syntax can reveal some repetitive patterns which can be expressed as property factories.
 In particular, if you find yourself implementing the same factory patterns and custom descriptors across your projects, this library may be helpful to you.
 
 ## Usage
+
 ```ts
 import {cssVar, forEach, getset, prop, ref} from 'hybrids-helpers'
 
@@ -41,6 +44,7 @@ Factories can be composed to reduce Hybrids descriptor boilerplate:
 ```
 
 ## Installation
+
 **hybrids-helpers** depends on hybrids >= 8.0.0
 
 ```bash

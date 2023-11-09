@@ -1,7 +1,7 @@
-import { Descriptor, Property } from "hybrids"
+import { Descriptor, Property } from 'hybrids'
 
 /**
- * @deprecated Preferred method of 
+ * @deprecated Preferred method of
  * https://hybrids.js.org/#/migration?id=property-factory
  */
 export const property = <E, V>(
