@@ -1,26 +1,26 @@
 import { describe, expect, test } from 'vitest'
-import { watch } from '../../factories/watch'
+import { effect } from '../../factories/effect'
 import { define } from 'hybrids'
 import { setup, tick } from '..'
 
-describe('watch', () => {
+describe('effect', () => {
   define<any>({
-    tag: 'test-watch',
+    tag: 'test-effect',
     foo: 'foo',
     counter: 0,
     // prettier-ignore
-    watch: watch<any>(({ foo }) => foo, (host) => host.counter += 1),
+    effect: effect<any>(({ foo }) => foo, (host) => host.counter += 1),
   })
 
-  const tree = setup(`<test-watch></test-watch>`).tree
+  const tree = setup(`<test-effect></test-effect>`).tree
 
   test(
-    'calls watch function',
+    'calls effect function',
     tree(async (el) => {
       expect(el.counter).toBe(1)
-      expect(el.watch).toBe('foo')
+      expect(el.effect).toBe('foo')
       el.foo = 'bar'
-      expect(el.watch).toBe('bar')
+      expect(el.effect).toBe('bar')
       await tick()
       expect(el.counter).toBe(2)
     })

@@ -1,4 +1,4 @@
-import { isClass } from 'src/utils'
+import { isClass } from '../utils'
 import { Disposable, Fn, Type } from '../interfaces'
 import { Descriptor } from 'hybrids'
 import { getset } from './getset'

@@ -1,10 +1,28 @@
-import { define, html } from 'hybrids'
-import { test } from 'vitest'
-import { describe, it, expect, beforeAll } from 'vitest'
-import { disposable, Disposable, getset, truthy, ro } from '../src'
+import { define } from 'hybrids'
+import { describe, expect, it, test } from 'vitest'
+import { getset, ro, truthy } from '../src'
+import { protect } from '../src/factories/protect.js'
 import { setup, tick } from '../src/test'
 
 describe('factories', () => {
+  describe.only('protect', () => {
+    define<any>({
+      tag: 'test-protect',
+      foo: protect(getset('foo')),
+    })
+
+    const tree = setup(`<test-protect></test-protect>`).tree
+
+    test(
+      'protect',
+      tree(async (el) => {
+        expect(el.foo).toBe('foo')
+        el.foo = 'bar'
+        expect(el.foo).toBe('bar')
+      })
+    )
+  })
+
   describe('getset', () => {
     it('returns a Descriptor', () => {
       const desc = getset('')

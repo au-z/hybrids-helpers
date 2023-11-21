@@ -15,6 +15,11 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [mode === 'analyze' && analyzer({ limit: 100, hideDeps: true })],
+    resolve: {
+      alias: {
+        src: '/src',
+      },
+    },
     test: {
       environment: 'happy-dom',
     },
