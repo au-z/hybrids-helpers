@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => {
         src: '/src',
       },
     },
+    sourceMap: true,
     test: {
       environment: 'happy-dom',
     },
