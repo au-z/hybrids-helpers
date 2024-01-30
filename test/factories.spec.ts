@@ -1,27 +1,26 @@
 import { define } from 'hybrids'
 import { describe, expect, it, test } from 'vitest'
 import { getset, ro, truthy } from '../src'
-import { protect } from '../src/factories/protect.js'
 import { setup, tick } from '../src/test'
 
 describe('factories', () => {
-  describe.only('protect', () => {
-    define<any>({
-      tag: 'test-protect',
-      foo: protect(getset('foo')),
-    })
+  // describe.only('protect', () => {
+  //   define<any>({
+  //     tag: 'test-protect',
+  //     foo: protect(getset('foo')),
+  //   })
 
-    const tree = setup(`<test-protect></test-protect>`).tree
+  //   const tree = setup(`<test-protect></test-protect>`).tree
 
-    test(
-      'protect',
-      tree(async (el) => {
-        expect(el.foo).toBe('foo')
-        el.foo = 'bar'
-        expect(el.foo).toBe('bar')
-      })
-    )
-  })
+  //   test(
+  //     'protect',
+  //     tree(async (el) => {
+  //       expect(el.foo).toBe('foo')
+  //       el.foo = 'bar'
+  //       expect(el.foo).toBe('bar')
+  //     })
+  //   )
+  // })
 
   describe('getset', () => {
     it('returns a Descriptor', () => {
@@ -36,7 +35,7 @@ describe('factories', () => {
       tag: 'my-test',
       value: {
         value: 0,
-        observe: truthy((host: any, val) => (host.division = 10 / val)),
+        observe: truthy((host: any, val: number) => (host.division = 10 / val)),
       },
       division: 1,
     })

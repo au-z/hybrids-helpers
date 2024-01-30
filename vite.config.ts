@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
         external: [...Object.keys(dependencies || {}).map((pkg) => new RegExp(`^${pkg}(/.*)?`))],
       },
     },
-    plugins: [mode === 'analyze' && analyzer({ limit: 100, hideDeps: true })],
+    plugins: [mode === 'analyze' && analyzer({ limit: 100, hideDeps: true })] as any,
     resolve: {
       alias: {
         src: '/src',

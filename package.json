@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "type": "module",
   "main": "./dist/hybrids-helpers.umd.cjs",
   "module": "./dist/hybrids-helpers.js",
@@ -18,20 +18,56 @@
   ],
   "types": "./dist/types/index.d.ts",
   "scripts": {
-    "build": "tsc && vite build",
-    "build:analyze": "tsc && vite build --mode analyze",
-    "dev": "vite",
-    "docgen": "typedoc --out docs src/index.ts",
+    "dev": "wireit",
+    "build": "wireit",
+    "build:analyze": "wireit",
+    "docgen": "wireit",
     "docs:preview": "pnpm docgen && pnpm dlx http-server --open -p 10000 ./docs",
     "test": "vitest test",
     "test:once": "vitest run test",
-    "prepublishOnly": "pnpm build && pnpm test:once && pnpm docgen"
+    "prepublishOnly": "pnpm docgen && pnpm test:once"
+  },
+  "wireit": {
+    "dev": {
+      "command": "vite"
+    },
+    "build": {
+      "command": "tsc && vite build",
+      "files": [
+        "src/**/*",
+        "package.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**/*"
+      ]
+    },
+    "build:analyze": {
+      "command": "tsc && vite build --mode analyze",
+      "files": [
+        "src/**/*",
+        "package.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**/*"
+      ]
+    },
+    "docgen": {
+      "command": "typedoc --out docs src/index.ts",
+      "dependencies": [
+        "build"
+      ],
+      "output": [
+        "docs/**/*"
+      ]
+    }
   },
   "dependencies": {
-    "hybrids": "^8.2.5"
+    "hybrids": "^8.2.8"
   },
   "peerDependencies": {
-    "hybrids": "^8.2.5"
+    "hybrids": "^8.2.8"
   },
   "devDependencies": {
     "happy-dom": "^12.10.3",
@@ -39,7 +75,7 @@
     "rollup-plugin-analyzer": "^4.0.0",
     "typedoc": "^0.25.3",
     "typescript": "^5.2.2",
-    "vite": "^4.4.7",
+    "vite": "^5.0.7",
     "vitest": "^0.33.0",
     "wireit": "^0.9.5"
   },
