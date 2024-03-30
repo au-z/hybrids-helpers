@@ -1,14 +1,33 @@
-import {UpdateFunctionWithMethods, html} from 'hybrids'
+import { UpdateFunctionWithMethods, html } from 'hybrids'
 
 export const hy = {
-  if: <E>(condition: (boolean | (() => boolean)), frag: UpdateFunctionWithMethods<E>, fallback?: UpdateFunctionWithMethods<E>) => {
+  if: <E>(
+    condition: boolean | (() => boolean),
+    frag: UpdateFunctionWithMethods<E>,
+    fallback?: UpdateFunctionWithMethods<E>
+  ) => {
     return (typeof condition === 'function' ? condition() : condition) ? frag : fallback ? fallback : html``
   },
-  regex: <E, R extends RegExp>(regexp: R, frag: (match: RegExpExecArray) => UpdateFunctionWithMethods<E>, fallback?: UpdateFunctionWithMethods<E>) => (value: string) => {
-    const result = regexp.exec(value)
-    return result?.[0] ? frag(result) : fallback ? fallback : html``
-  },
-  map: <E, T>(items: T[] | ((...args: any[]) => T[]), predicate: (item: T, i: number, arr: T[]) => UpdateFunctionWithMethods<E>) => {
+  regex:
+    <E, R extends RegExp>(
+      regexp: R,
+      frag: (match: RegExpExecArray) => UpdateFunctionWithMethods<E>,
+      fallback?: UpdateFunctionWithMethods<E>
+    ) =>
+    (value: string) => {
+      const result = regexp.exec(value)
+      return result?.[0] ? frag(result) : fallback ? fallback : html``
+    },
+  map: <E, T>(
+    items: T[] | ((...args: any[]) => T[]),
+    predicate: (item: T, i: number, arr: T[]) => UpdateFunctionWithMethods<E>
+  ) => {
     return (typeof items === 'function' ? items() : items).map(predicate)
-  }
+  },
+  case: <E, T extends number | string | symbol>(
+    value: T,
+    cases: Record<T, UpdateFunctionWithMethods<E>> & { default?: UpdateFunctionWithMethods<E> }
+  ) => {
+    return cases[value] ? cases[value] : cases.default ? cases.default : html``
+  },
 }
