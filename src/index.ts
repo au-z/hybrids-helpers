@@ -15,4 +15,8 @@ export * from './factories/set.js'
 export * from './factories/reflect.js'
 export * from './factories/effect.js'
 
+// template formatting functions
 export * from './hy.js'
+
+// utility functions
+export { propertyToDescriptor } from './utils.js'
