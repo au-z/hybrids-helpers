@@ -31,7 +31,7 @@
     "docgen": "wireit",
     "docs:preview": "pnpm docgen && pnpm dlx http-server --open -p 10000 ./docs",
     "test": "vitest test",
-    "test:once": "vitest run test",
+    "test:once": "vitest run test --segfault-retry=3",
     "prepublishOnly": "pnpm docgen && pnpm test:once"
   },
   "wireit": {
