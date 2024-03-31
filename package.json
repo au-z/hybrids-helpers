@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "type": "module",
   "main": "./dist/hybrids-helpers.umd.cjs",
   "module": "./dist/hybrids-helpers.js",
