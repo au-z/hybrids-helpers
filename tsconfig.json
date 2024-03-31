@@ -12,7 +12,7 @@
     "baseUrl": "./",
     "rootDir": "./",
     "isolatedModules": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["src", "test"],
   "exclude": ["node_modules", "dist"]
