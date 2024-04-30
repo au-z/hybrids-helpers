@@ -16,3 +16,4 @@ export * from './factories/effect.js'
 export * from './refs/ref.js'
 
 export * from './hy.js'
+export { propertyToDescriptor } from './utils.js'
