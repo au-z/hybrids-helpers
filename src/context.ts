@@ -1,4 +1,4 @@
-import { Property } from 'hybrids'
+import { Descriptor, Property } from 'hybrids'
 import { Invalidate, Mixin, propertyToDescriptor } from './utils'
 
 export type Provide<T> = <H, Keys extends keyof H>(
@@ -6,7 +6,8 @@ export type Provide<T> = <H, Keys extends keyof H>(
     [K in keyof T]: Property<H, T[K]>
   }) => {
     [K in Keys]: Property<H, H[K]>
-  }
+  },
+  unsafe?: boolean
 ) => {
   [K in Keys]: Property<H, H[K]>
 }
@@ -31,24 +32,27 @@ export type Provide<T> = <H, Keys extends keyof H>(
  * @category Context
  * @typeParam T - the type of the context object
  * @param context a Hybrids mixin with properties to provide.
+ * @param options.verbose - log invalidations to the console.
  * @returns a tuple with the decorated context mixin and a provider function.
  */
-export function context<T>(context: Mixin<T>): [Mixin<T>, Provide<T>] {
-  let contextHost: T
-  // a cache of invalidate functions
-  // when the context property changes, we call all the invalidate functions
-  // invalidate functios are added to the cache in each provided property
-  const subscriptions: {
+export function context<T>(context: Mixin<T>, options?: { verbose?: boolean }): [Mixin<T>, Provide<T>] {
+  options = {
+    verbose: false,
+    ...options,
+  }
+
+  let contextHost: T & HTMLElement
+  const cache: {
     [K in keyof T]?: Invalidate<T, K>[]
   } = {}
 
   context = Object.keys(context).reduce((result, key) => {
-    subscriptions[key] = []
+    cache[key] = []
     const descriptor = propertyToDescriptor(context[key])
 
     result[key] = {
       ...descriptor,
-      connect: (host, key, invalidate) => {
+      connect: (host: T & HTMLElement & { __property_key__: any }, key, invalidate) => {
         if (!contextHost) contextHost = host
         const disconnect = descriptor.connect?.(host, key, invalidate)
         return () => {
@@ -58,35 +62,73 @@ export function context<T>(context: Mixin<T>): [Mixin<T>, Provide<T>] {
       },
       observe: (host, val, last) => {
         descriptor.observe?.(host, val, last)
-        subscriptions[key].forEach((invalidate) => invalidate())
+        cache[key].forEach((invalidate) => invalidate())
       },
     }
 
     return result
   }, {} as Mixin<T>)
 
-  const provide: Provide<T> = function <H>(mapper) {
+  /**
+   * Provide context to inheritor elements.
+   * @param mapper a function which receives the context and maps to inheritor properties.
+   * @param unsafe whether to allow inheriting from a non-descendant.
+   * @returns the properties to map onto the inheritor.
+   */
+  const provide: Provide<T> = function <H>(mapper, unsafe = false) {
+    let providedHost
+    let isDescendant = false
+    const allow = () => isDescendant || unsafe
+
     const providers = Object.keys(context).reduce((providers, key) => {
       providers[key] = {
         // get the value of the context property
-        get: (host: H, val) => contextHost[key],
+        get: (host: H, val) => (allow() ? contextHost[key] : val),
         // add the invalidate function to the cache
-        connect: (host: H, key, invalidate) => {
-          if (!subscriptions[key]) subscriptions[key] = []
-          subscriptions[key].push(invalidate)
+        connect: connectDescendant((host: H & HTMLElement, key: string, invalidate: Function) => {
+          if (!cache[key]) cache[key] = []
+          function inv() {
+            options.verbose && console.log(`invalidating ${host.tagName}.${key}`)
+            invalidate()
+          }
+          cache[key].push(inv)
 
           return () => {
             // remove the invalidate function from the cache
-            const idx = subscriptions[key].indexOf(invalidate)
-            if (idx >= 0) subscriptions[key].splice(idx, 1)
+            const idx = cache[key].indexOf(inv)
+            if (idx >= 0) cache[key].splice(idx, 1)
           }
-        },
+        }, unsafe),
       }
       return providers
     }, {})
 
     return mapper(providers)
+
+    /// helper functions
+
+    function connectDescendant(connect: Descriptor<H, any>['connect'], unsafe = false) {
+      return (host: H & HTMLElement & { __property_key__: string }, key, invalidate) => {
+        if (!providedHost) providedHost = host
+        isDescendant = isParent(providedHost, contextHost)
+        if (allow()) {
+          connect(host, key, invalidate)
+        } else {
+          console.error(
+            `Cannot inherit. ${host.tagName} is not a child of ${contextHost.tagName}.\n\tTo suppress this, set the 'unsafe' flag on the provide function.`
+          )
+        }
+      }
+    }
   }
 
   return [context, provide]
+}
+
+function isParent(node: Node, test: Node) {
+  while (node) {
+    if (node === test) return true
+    node = node.parentNode
+  }
+  return false
 }

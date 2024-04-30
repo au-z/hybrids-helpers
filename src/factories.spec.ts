@@ -1,7 +1,7 @@
 import { define } from 'hybrids'
 import { describe, expect, it, test } from 'vitest'
-import { getset, ro, truthy } from '../src'
-import { setup, tick } from '../src/test'
+import { getset, ro, truthy } from '.'
+import { setup, tick } from './test'
 
 describe('factories', () => {
   // describe.only('protect', () => {

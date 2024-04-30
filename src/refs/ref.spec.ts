@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { ref } from '../../refs/ref'
+import { ref } from './ref'
 import { define, html } from 'hybrids'
-import { setup } from '..'
+import { setup } from '../test'
 
 describe('ref', () => {
   define<any>({

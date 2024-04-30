@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { effect } from '../../factories/effect'
+import { effect } from './effect'
 import { define } from 'hybrids'
-import { setup, tick } from '..'
+import { setup, tick } from '../test'
 
 describe('effect', () => {
   define<any>({

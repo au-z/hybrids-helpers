@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { setup } from '..'
-import { getset } from '../../factories/getset'
+import { setup } from '../test'
+import { getset } from './getset'
 import { define } from 'hybrids'
 
 describe('getset', () => {
