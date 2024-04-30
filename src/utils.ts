@@ -1,4 +1,7 @@
-import { Descriptor, Property } from 'hybrids'
+import { Component, Descriptor, Property } from 'hybrids'
+export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+export type Mixin<T> = Optional<Component<T>, 'tag'>
+export type Invalidate<E, K extends keyof E> = Parameters<Descriptor<E, E[K]>['connect']>[2]
 
 export const isClass = (fn) => typeof fn === 'function' && /^class\s/.test(Function.prototype.toString.call(fn))
 

@@ -1,23 +1,14 @@
-import { Descriptor, Property, define } from 'hybrids'
-import { propertyToDescriptor } from 'src/utils'
+import { Property } from 'hybrids'
+import { propertyToDescriptor } from '../utils.js'
 
 /**
- * Reflect a property without a value to an attribute on the host.
- * ```
- * define({
- *   num: 0,
- *   positive: reflect(({num}) => num > 0),
- * })
- * ```
- * @category Descriptors
- * @typeParam E - host element type
- * @typeParam V - property value type
+ * Reflect any property to an attribute on the host
  * @param prop the property to reflect
  * @param name the attribute name to reflect to (defaults to the property key)
  * @returns a Hybrids Descriptor with the reflection side-effect
  */
-export const reflect = <E extends HTMLElement, V>(prop: Property<E, V>, name?: string): Descriptor<E, V> => {
-  const descriptor = propertyToDescriptor<E, V>(prop)
+export const reflect = <E extends HTMLElement, V>(prop: Property<E, V>, name?: string) => {
+  const descriptor = propertyToDescriptor(prop)
   return {
     ...descriptor,
     connect: (host, key, invalidate) => {

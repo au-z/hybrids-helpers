@@ -1,8 +1,8 @@
 import { define } from 'hybrids'
 import { AnyAction, createStore, Store } from 'redux'
 import { describe, it, expect, beforeAll } from 'vitest'
-import { redux } from '../src/redux'
-import { setup } from '../src/test'
+import { redux } from './redux'
+import { setup } from './test'
 
 describe('redux factories', () => {
   const { store } = testStore(

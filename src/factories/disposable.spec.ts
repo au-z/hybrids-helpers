@@ -1,8 +1,8 @@
 import { define } from 'hybrids'
 import { beforeAll, describe, expect, test } from 'vitest'
-import { setup } from '..'
-import { disposable } from '../../factories/disposable'
-import { Disposable } from '../../interfaces'
+import { setup } from '../test'
+import { disposable } from './disposable'
+import { Disposable } from '../interfaces'
 
 let disposed = false
 

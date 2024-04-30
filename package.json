@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "type": "module",
   "main": "./dist/hybrids-helpers.umd.cjs",
   "module": "./dist/hybrids-helpers.js",
@@ -30,8 +30,8 @@
     "build:analyze": "wireit",
     "docgen": "wireit",
     "docs:preview": "pnpm docgen && pnpm dlx http-server --open -p 10000 ./docs",
-    "test": "vitest test",
-    "test:once": "vitest run test --segfault-retry=3",
+    "test": "vitest",
+    "test:once": "vitest run",
     "prepublishOnly": "pnpm docgen && pnpm test:once"
   },
   "wireit": {
@@ -92,8 +92,8 @@
     "rollup-plugin-analyzer": "^4.0.0",
     "typedoc": "^0.25.3",
     "typescript": "^5.2.2",
-    "vite": "^5.2.7",
-    "vitest": "^1.4.0",
+    "vite": "^5.0.7",
+    "vitest": "^1.5.2",
     "wireit": "^0.9.5"
   },
   "pnpm": {
