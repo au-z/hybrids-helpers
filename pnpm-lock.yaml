@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   hybrids:
-    specifier: ^8.2.8
-    version: 8.2.10
+    specifier: ^8.2.14
+    version: 8.2.22
 
 devDependencies:
   happy-dom:
@@ -689,8 +689,8 @@ packages:
     engines: {node: '>=16.17.0'}
     dev: true
 
-  /hybrids@8.2.10:
-    resolution: {integrity: sha512-1n2TPzuzFBvo1LmQMA2vjR+/lgqYdKhMzqgJbNApMhNlVeBw5nTjzIv3+x7LOpIORCvHKQ9DwvGm9yLrgZMsTw==}
+  /hybrids@8.2.22:
+    resolution: {integrity: sha512-RmhoIrf1fWrCUBVVwkCdQ3q1VgNKlL6tjQJ8eXd6Q14jPAdveENDoJfjRsgXJkuQ71dK31ZxaS+G8w8BDxKACw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dev: false
