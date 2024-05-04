@@ -6,10 +6,12 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       emptyOutDir: false,
+      minify: false,
       lib: {
         entry: 'src/index.ts',
         name: 'hybrids-helpers',
       },
+      formats: ['es'],
       rollupOptions: {
         external: [...Object.keys(dependencies || {}).map((pkg) => new RegExp(`^${pkg}(/.*)?`))],
       },

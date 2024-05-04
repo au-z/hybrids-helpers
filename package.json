@@ -1,19 +1,17 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "type": "module",
   "main": "./dist/hybrids-helpers.umd.cjs",
   "module": "./dist/hybrids-helpers.js",
   "exports": {
     ".": {
-      "types": "./dist/types/src/index.d.ts",
       "import": "./dist/hybrids-helpers.js",
-      "require": "./dist/hybrids-helpers.umd.cjs"
+      "require": "./dist/hybrids-helpers.umd.cjs",
+      "types": "./dist/types/src/index.d.ts"
     }
   },
   "files": [
-    "README.md",
-    "package.json",
     "dist"
   ],
   "types": "./dist/types/src/index.d.ts",

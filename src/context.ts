@@ -32,12 +32,17 @@ export type Provide<T> = <H, Keys extends keyof H>(
  * @category Context
  * @typeParam T - the type of the context object
  * @param context a Hybrids mixin with properties to provide.
- * @param options.verbose - log invalidations to the console.
+ * @param options.verbose - log invalidations to the console. (default: false)
+ * @param options.strict - prevent provide if no context host is found first. (default: false)
  * @returns a tuple with the decorated context mixin and a provider function.
  */
-export function context<T>(context: Mixin<T>, options?: { verbose?: boolean }): [Mixin<T>, Provide<T>] {
+export function context<T>(
+  context: Mixin<T>,
+  options?: { verbose?: boolean; strict?: boolean }
+): [Mixin<T>, Provide<T>] {
   options = {
     verbose: false,
+    strict: false,
     ...options,
   }
 
@@ -76,6 +81,11 @@ export function context<T>(context: Mixin<T>, options?: { verbose?: boolean }): 
    * @returns the properties to map onto the inheritor.
    */
   const provide: Provide<T> = function <H>(mapper, unsafe = false) {
+    if (options.strict && !contextHost) {
+      console.error('Context host is undefined. Did you forget to register context with a parent component?')
+      return {} as any
+    }
+
     let providedHost
     let isDescendant = false
     const allow = () => isDescendant || unsafe
@@ -83,7 +93,7 @@ export function context<T>(context: Mixin<T>, options?: { verbose?: boolean }): 
     const providers = Object.keys(context).reduce((providers, key) => {
       providers[key] = {
         // get the value of the context property
-        get: (host: H, val) => (allow() ? contextHost[key] : val),
+        get: (host: H, val) => (allow() ? contextHost?.[key] : val),
         // add the invalidate function to the cache
         connect: connectDescendant((host: H & HTMLElement, key: string, invalidate: Function) => {
           if (!cache[key]) cache[key] = []
@@ -115,7 +125,7 @@ export function context<T>(context: Mixin<T>, options?: { verbose?: boolean }): 
           connect(host, key, invalidate)
         } else {
           console.error(
-            `Cannot inherit. ${host.tagName} is not a child of ${contextHost.tagName}.\n\tTo suppress this, set the 'unsafe' flag on the provide function.`
+            `Cannot inherit. ${host.tagName} is not a child of ${contextHost?.tagName}.\n\tTo suppress this, set the 'unsafe' flag on the provide function.`
           )
         }
       }
@@ -126,7 +136,7 @@ export function context<T>(context: Mixin<T>, options?: { verbose?: boolean }): 
 }
 
 function isParent(node: Node, test: Node) {
-  while (node) {
+  while (test && node) {
     if (node === test) return true
     node = node.parentNode
   }
