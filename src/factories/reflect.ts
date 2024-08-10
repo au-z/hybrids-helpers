@@ -4,25 +4,30 @@ import { propertyToDescriptor } from '../utils.js'
 /**
  * Reflect any property to an attribute on the host
  * @param prop the property to reflect
- * @param name the attribute name to reflect to (defaults to the property key)
+ * @param reverse if true, sets the property when the attribute changes
  * @returns a Hybrids Descriptor with the reflection side-effect
  */
-export const reflect = <E extends HTMLElement, V>(prop: Property<E, V>, name?: string) => {
+export const reflect = <E extends HTMLElement, V>(prop: Property<E, V>, reverse = false) => {
   const descriptor = propertyToDescriptor(prop)
+  const computed = typeof descriptor.value === 'function'
   return {
     ...descriptor,
-    connect: (host, key, invalidate) => {
-      if (!name) name = key
-      return descriptor.connect?.(host, key, invalidate)
-    },
-    observe: (host, val, last) => {
-      if (val) {
-        const value = typeof val === 'boolean' ? '' : JSON.stringify(val)
-        host.setAttribute(name, value)
-      } else {
-        host.removeAttribute(name)
+    reflect: true,
+    connect(host, key, invalidate) {
+      const disconnect = descriptor.connect?.(host, key, invalidate)
+
+      let ob
+      if (reverse) {
+        ob = new MutationObserver(() => {
+          if (!computed) host[key] = host.getAttribute(key)
+        })
+        ob.observe(host, { attributes: true, attributeFilter: [key] })
       }
-      descriptor.observe?.(host, val, last)
+
+      return () => {
+        if (ob?.disconnect) ob.disconnect()
+        if (disconnect) disconnect()
+      }
     },
   }
 }

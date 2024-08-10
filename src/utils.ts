@@ -12,7 +12,7 @@ export const isClass = (fn) => typeof fn === 'function' && /^class\s/.test(Funct
  */
 export const propertyToDescriptor = <E, V>(property: Property<E, V>): Descriptor<E, V> => {
   return typeof property === 'function'
-    ? { get: property }
+    ? { value: property }
     : typeof property === 'object'
     ? property
     : { value: property }

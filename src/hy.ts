@@ -1,6 +1,7 @@
 import { UpdateFunctionWithMethods, html } from 'hybrids'
 
 export const hy = {
+  print: (data: any, space?: string | number) => html`<pre>${JSON.stringify(data, null, space)}</pre>`,
   if: <E>(
     condition: boolean | (() => boolean),
     frag: UpdateFunctionWithMethods<E>,
@@ -8,16 +9,15 @@ export const hy = {
   ) => {
     return (typeof condition === 'function' ? condition() : condition) ? frag : fallback ? fallback : html``
   },
-  regex:
-    <E, R extends RegExp>(
-      regexp: R,
-      frag: (match: RegExpExecArray) => UpdateFunctionWithMethods<E>,
-      fallback?: UpdateFunctionWithMethods<E>
-    ) =>
-    (value: string) => {
-      const result = regexp.exec(value)
-      return result?.[0] ? frag(result) : fallback ? fallback : html``
-    },
+  // prettier-ignore
+  regex: <E, R extends RegExp>(
+    regexp: R,
+    frag: (match: RegExpExecArray) => UpdateFunctionWithMethods<E>,
+    fallback?: UpdateFunctionWithMethods<E>
+  ) => (value: string) => {
+    const result = regexp.exec(value)
+    return result?.[0] ? frag(result) : fallback ? fallback : html``
+  },
   map: <E, T>(
     items: T[] | ((...args: any[]) => T[]),
     predicate: (item: T, i: number, arr: T[]) => UpdateFunctionWithMethods<E>

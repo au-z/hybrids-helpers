@@ -1,7 +1,7 @@
 import { define } from 'hybrids'
 import { describe, it, expect } from 'vitest'
-import { listen } from '.'
-import { setup } from './test'
+import { listen } from '@auzmartist/hybrids-helpers'
+import { setup } from '../test/index.js'
 
 describe('Hybrids connectors', () => {
   describe('listen', () => {

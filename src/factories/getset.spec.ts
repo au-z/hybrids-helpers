@@ -1,7 +1,7 @@
+import { getset } from '@auzmartist/hybrids-helpers'
+import { define } from 'hybrids'
 import { describe, expect, test } from 'vitest'
 import { setup } from '../test'
-import { getset } from './getset'
-import { define } from 'hybrids'
 
 describe('getset', () => {
   define<any>({

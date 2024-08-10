@@ -5,28 +5,38 @@ import { define } from 'hybrids'
 
 interface H extends HTMLElement {
   foo: number
-  foo2: number
+  getfoo: number
+  reflectfoo: number
   bar: number
-  baz: number
 }
 
 describe('reflect', () => {
   define<H>({
     tag: 'test-reflect',
     foo: 0,
-    foo2: (host) => host.foo,
-    bar: reflect<H, number>((host: H) => host.foo),
-    baz: reflect<H, number>((host: H) => host.foo, 'barbar'),
+    getfoo: (host) => host.foo,
+    reflectfoo: reflect((host) => host.foo),
+    bar: reflect((host) => host.foo, true),
   })
 
   const tree = setup(`<test-reflect></test-reflect>`).tree
+
+  test(
+    'reflected properties can be reset when the attribute changes',
+    tree(async (el) => {
+      el.foo = 42
+      await tick()
+      expect(el.bar).toBe(42)
+      el.setAttribute('bar', '24')
+    })
+  )
 
   test(
     'getter property does not automatically reflect',
     tree(async (el) => {
       el.foo = 42
       await tick()
-      expect(el.getAttribute('foo2')).toBe(null)
+      expect(el.getAttribute('getfoo')).toBe(null)
     })
   )
 
@@ -35,35 +45,26 @@ describe('reflect', () => {
     tree(async (el) => {
       el.foo = 42
       await tick()
-      expect(el.getAttribute('bar')).toBe('42')
+      expect(el.getAttribute('reflectfoo')).toBe('42')
     })
   )
 
   test(
-    'removes attribute when property is set to null',
+    'resets the reflected attribute when the property is unset',
     tree(async (el) => {
       el.foo = null
+      expect(el.foo).toBe(0)
       await tick()
-      expect(el.hasAttribute('bar')).toBe(false)
+      expect(el.getAttribute('reflectfoo')).toBe('0')
     })
   )
 
   test(
-    'removes attribute when property is set to undefined',
+    'resets the reflected attribute when property is set to undefined',
     tree(async (el) => {
       el.foo = undefined
       await tick()
-      expect(el.hasAttribute('bar')).toBe(false)
-    })
-  )
-
-  test(
-    'can reflect to a different attribute name',
-    tree(async (el) => {
-      el.foo = 42
-      await tick()
-      //
-      expect(el.getAttribute('barbar')).toBe('42')
+      expect(el.getAttribute('reflectfoo')).toBe('0')
     })
   )
 })

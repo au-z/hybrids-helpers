@@ -4,24 +4,6 @@ import { getset, ro, truthy } from '.'
 import { setup, tick } from './test'
 
 describe('factories', () => {
-  // describe.only('protect', () => {
-  //   define<any>({
-  //     tag: 'test-protect',
-  //     foo: protect(getset('foo')),
-  //   })
-
-  //   const tree = setup(`<test-protect></test-protect>`).tree
-
-  //   test(
-  //     'protect',
-  //     tree(async (el) => {
-  //       expect(el.foo).toBe('foo')
-  //       el.foo = 'bar'
-  //       expect(el.foo).toBe('bar')
-  //     })
-  //   )
-  // })
-
   describe('getset', () => {
     it('returns a Descriptor', () => {
       const desc = getset('')
@@ -51,9 +33,9 @@ describe('factories', () => {
         el.value = 0.5
         await tick()
         expect(el.division).toBe(20)
-        el.value = undefined // sets NaN
+        el.value = undefined // sets 0
         await tick()
-        expect(el.value).toBe(NaN)
+        expect(el.value).toBe(0)
         expect(el.division).toBe(20)
       })
     )

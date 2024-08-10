@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { setup, tick } from '../test'
-import { listen } from './listen'
-import { connect } from './connect'
+import { listen } from '@auzmartist/hybrids-helpers'
+import { connect } from '../factories/connect'
 import { define } from 'hybrids'
 
 // prettier-ignore

@@ -2,13 +2,14 @@ import { define, html } from 'hybrids'
 import { hy } from './hy'
 import { describe, test, expect } from 'vitest'
 import { setup, tick } from './test'
+import { light } from './render/light'
 
 describe('hy', () => {
   describe('if', () => {
     define<any>({
       tag: 'test-if',
       value: false,
-      content: ({ value }) => hy.if(value, html`True`, html`False`),
+      render: light(({ value }) => hy.if(value, html`True`, html`False`)),
     })
 
     const tree = setup(`<test-if></test-if>`).tree
@@ -16,10 +17,10 @@ describe('hy', () => {
     test(
       'renders based on the conditional',
       tree(async (el) => {
-        expect(el.textContent).toBe('False')
+        expect(el.childNodes[0].textContent).toBe('False')
         el.value = true
         await tick()
-        expect(el.textContent).toBe('True')
+        expect(el.childNodes[0].textContent).toBe('True')
       })
     )
   })
@@ -29,7 +30,7 @@ describe('hy', () => {
       tag: 'test-regex',
       regex: () => /(\d+)\/(\d+)/,
       value: 'a/b',
-      content: ({ regex, value }) => hy.regex(regex, ([match, a, b]) => html`${a}/${b}`, html`No Match`)(value),
+      render: light(({ regex, value }) => hy.regex(regex, ([match, a, b]) => html`${a}/${b}`, html`No Match`)(value)),
     })
 
     const tree = setup(`<test-regex></test-regex>`).tree
@@ -49,7 +50,7 @@ describe('hy', () => {
     define<any>({
       tag: 'test-map',
       items: () => [65, 66, 67],
-      content: ({ items }: { items: number[] }) => html`[${hy.map(items, (i) => html`${String.fromCharCode(i)}`)}]`,
+      render: light(({ items }) => html`[ ${hy.map(items, (i: number) => html`${String.fromCharCode(i)}`)} ]`),
     })
 
     const tree = setup(`<test-map></test-map>`).tree
@@ -57,7 +58,7 @@ describe('hy', () => {
     test(
       'renders the mapped items',
       tree(async (el) => {
-        expect(el.textContent).toBe('[ABC]')
+        expect(el.childNodes.map((c) => c.textContent).join('')).toBe('[ ABC ]')
       })
     )
   })

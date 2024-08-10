@@ -1,7 +1,15 @@
 import { isClass } from '../utils'
-import { Disposable, Fn, Type } from '../interfaces'
 import { Descriptor } from 'hybrids'
-import { getset } from './getset'
+
+export interface Type<T> extends Function {
+  new (...args: any[]): T
+}
+
+export type Fn<T> = (...args: any[]) => T
+
+export interface Disposable {
+  dispose: () => void
+}
 
 /**
  * A factory handling a Disposable object. The disposed return value is assigned when removed from the DOM.
@@ -27,7 +35,7 @@ import { getset } from './getset'
 export const disposable = <E, V extends Disposable = Disposable>(
   Ctor: Type<Disposable> | Fn<Disposable>
 ): Descriptor<E, V> => ({
-  ...getset(undefined),
+  value: undefined,
   connect: (host, key, invalidate) => {
     const instance = isClass(Ctor)
       ? new (<Type<Disposable>>Ctor)(host, key, invalidate)

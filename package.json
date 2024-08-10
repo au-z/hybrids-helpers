@@ -1,13 +1,11 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "0.6.3",
+  "version": "1.0.0-alpha",
   "type": "module",
-  "main": "./dist/hybrids-helpers.umd.cjs",
   "module": "./dist/hybrids-helpers.js",
   "exports": {
     ".": {
       "import": "./dist/hybrids-helpers.js",
-      "require": "./dist/hybrids-helpers.umd.cjs",
       "types": "./dist/types/src/index.d.ts"
     }
   },
@@ -79,20 +77,19 @@
     }
   },
   "dependencies": {
-    "hybrids": "^8.2.14"
+    "hybrids": "^9.0.0"
   },
   "peerDependencies": {
-    "hybrids": "^8.2.14"
+    "hybrids": "^9.0.0"
   },
   "devDependencies": {
     "happy-dom": "^12.10.3",
-    "redux": "^4.2.0",
     "rollup-plugin-analyzer": "^4.0.0",
     "typedoc": "^0.25.3",
     "typescript": "^5.2.2",
     "vite": "^5.0.7",
-    "vitest": "^1.5.2",
-    "wireit": "^0.9.5"
+    "vitest": "^1.6.0",
+    "wireit": "^0.14.7"
   },
   "pnpm": {
     "peerDependencyRules": {

@@ -3,7 +3,9 @@
  * https://hybrids.js.org/#/migration?id=render-factory
  */
 
-export default function render(fn, customOptions = {}) {
+import { UpdateFunctionWithMethods } from 'hybrids'
+
+export default function render<E>(fn: (host: E & HTMLElement) => UpdateFunctionWithMethods<E>, customOptions = {}) {
   if (typeof fn !== 'function') {
     throw TypeError(`The first argument must be a function: ${typeof fn}`)
   }

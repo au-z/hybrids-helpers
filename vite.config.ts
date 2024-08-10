@@ -11,7 +11,6 @@ export default defineConfig(({ mode }) => {
         entry: 'src/index.ts',
         name: 'hybrids-helpers',
       },
-      formats: ['es'],
       rollupOptions: {
         external: [...Object.keys(dependencies || {}).map((pkg) => new RegExp(`^${pkg}(/.*)?`))],
       },
@@ -20,6 +19,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         src: '/src',
+        '@auzmartist/hybrids-helpers': '/src/index.ts',
       },
     },
     sourceMap: true,

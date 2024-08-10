@@ -1,8 +1,7 @@
 import { define } from 'hybrids'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { setup } from '../test'
-import { disposable } from './disposable'
-import { Disposable } from '../interfaces'
+import { disposable, Disposable } from '@auzmartist/hybrids-helpers'
 
 let disposed = false
 
