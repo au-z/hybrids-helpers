@@ -4,10 +4,10 @@ import { propertyToDescriptor } from '../utils.js'
 /**
  * Reflect any property to an attribute on the host
  * @param prop the property to reflect
- * @param reverse if true, sets the property when the attribute changes
+ * @param bidirectional if true, sets the property when the attribute changes
  * @returns a Hybrids Descriptor with the reflection side-effect
  */
-export const reflect = <E extends HTMLElement, V>(prop: Property<E, V>, reverse = false) => {
+export const reflect = <E extends HTMLElement, V>(prop: Property<E, V>, bidirectional = false) => {
   const descriptor = propertyToDescriptor(prop)
   const computed = typeof descriptor.value === 'function'
   return {
@@ -17,7 +17,7 @@ export const reflect = <E extends HTMLElement, V>(prop: Property<E, V>, reverse 
       const disconnect = descriptor.connect?.(host, key, invalidate)
 
       let ob
-      if (reverse) {
+      if (bidirectional) {
         ob = new MutationObserver(() => {
           if (!computed) host[key] = host.getAttribute(key)
         })

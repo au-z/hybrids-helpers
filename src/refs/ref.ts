@@ -14,10 +14,8 @@ import { Descriptor } from 'hybrids'
  * @param query the querySelector query
  * @returns a reference to an element in the shadowDOM
  */
-export const ref = <E extends { render: () => ShadowRoot }, T extends Element = Element>(
-  query: string
-): Descriptor<E, T> => ({
-  value: ({ render }: E & HTMLElement) => render().querySelector(query) as T,
+export const ref = <T extends Element = Element>(query: string): Descriptor<unknown, T> => ({
+  value: (host: { render: () => ShadowRoot } & HTMLElement) => host.render().querySelector(query) as T,
 })
 
 /**
@@ -35,8 +33,8 @@ export const ref = <E extends { render: () => ShadowRoot }, T extends Element = 
  * @param queryAll the querySelectorAll query
  * @returns references to all elements in the shadowDOM
  */
-export const refs = <E, T extends Element = Element>(queryAll: string): Descriptor<E, T[]> => ({
-  value: ({ render }: E & HTMLElement & { render: () => ShadowRoot }) => {
+export const refs = <T extends Element = Element>(queryAll: string): Descriptor<unknown, T[]> => ({
+  value: ({ render }: HTMLElement & { render: () => ShadowRoot }) => {
     const nodeList = render().querySelectorAll(queryAll)
     return Array.from(nodeList) as T[]
   },

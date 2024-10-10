@@ -1,4 +1,4 @@
-import { isClass } from '../utils'
+import { isClass } from '../utils.js'
 import { Descriptor } from 'hybrids'
 
 export interface Type<T> extends Function {

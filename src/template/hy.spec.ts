@@ -1,8 +1,8 @@
 import { define, html } from 'hybrids'
-import { hy } from './hy'
+import { hy } from './hy.js'
 import { describe, test, expect } from 'vitest'
-import { setup, tick } from './test'
-import { light } from './render/light'
+import { setup, tick } from '../test/index.js'
+import { light } from '@auzmartist/hybrids-helpers'
 
 describe('hy', () => {
   describe('if', () => {

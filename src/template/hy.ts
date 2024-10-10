@@ -30,4 +30,7 @@ export const hy = {
   ) => {
     return cases[value] ? cases[value] : cases.default ? cases.default : html``
   },
+  keyvalue: <E>(record: Record<any, any>, template: (key: any, value: any) => UpdateFunctionWithMethods<E>) => {
+    return Object.entries(record).map(([key, value]) => template(key, value))
+  },
 }

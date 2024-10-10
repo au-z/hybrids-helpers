@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
-    "moduleResolution": "node",
+    "target": "esnext",
+    "module": "NodeNext",
+    "lib": ["esnext", "DOM"],
+    "moduleResolution": "NodeNext",
     "declaration": true,
     "emitDeclarationOnly": true,
     "noImplicitAny": false,
@@ -14,10 +14,10 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "paths": {
-      "src": ["src"],
-      "@auzmartist/hybrids-helpers": ["src/index.ts"]
+      "@src/*": ["src/*"],
+      "@auzmartist/hybrids-helpers": ["src/index.ts"],
     }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "exclude": ["node_modules", "dist"],
 }

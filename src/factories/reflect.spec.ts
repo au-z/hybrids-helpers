@@ -1,31 +1,70 @@
 import { reflect } from '@auzmartist/hybrids-helpers'
 import { define } from 'hybrids'
 import { describe, expect, test } from 'vitest'
-import { setup, tick } from '../test'
+import { setup, tick } from '../test/index.js'
+
+interface H extends HTMLElement {
+  foo: number
+  getfoo: number
+  reflectfoo: number
+  bar: number
+}
 
 describe('reflect', () => {
-  define<any>({
+  define<H>({
     tag: 'test-reflect',
-    foo: reflect('foo', true),
+    foo: 0,
+    getfoo: (host) => host.foo,
+    reflectfoo: reflect((host) => host.foo),
+    bar: reflect((host) => host.foo, true),
   })
 
   const tree = setup(`<test-reflect></test-reflect>`).tree
 
   test(
-    'reflects attribute to property',
+    'reflected properties can be reset when the attribute changes',
     tree(async (el) => {
-      el.setAttribute('foo', 'bar')
+      el.foo = 42
       await tick()
-      expect(el.foo).toBe('bar')
+      expect(el.bar).toBe(42)
+      el.setAttribute('bar', '24')
+    })
+  )
+
+  test(
+    'getter property does not automatically reflect',
+    tree(async (el) => {
+      el.foo = 42
+      await tick()
+      expect(el.getAttribute('getfoo')).toBe(null)
     })
   )
 
   test(
     'reflects property to attribute',
     tree(async (el) => {
-      el.foo = 'baz'
+      el.foo = 42
       await tick()
-      expect(el.getAttribute('foo')).toBe('baz')
+      expect(el.getAttribute('reflectfoo')).toBe('42')
+    })
+  )
+
+  test(
+    'resets the reflected attribute when the property is unset',
+    tree(async (el) => {
+      el.foo = null
+      expect(el.foo).toBe(0)
+      await tick()
+      expect(el.getAttribute('reflectfoo')).toBe('0')
+    })
+  )
+
+  test(
+    'resets the reflected attribute when property is set to undefined',
+    tree(async (el) => {
+      el.foo = undefined
+      await tick()
+      expect(el.getAttribute('reflectfoo')).toBe('0')
     })
   )
 })

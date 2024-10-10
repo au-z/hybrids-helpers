@@ -12,6 +12,9 @@ importers:
         specifier: ^9.0.0
         version: 9.1.1
     devDependencies:
+      '@types/node':
+        specifier: ^22.7.4
+        version: 22.7.4
       happy-dom:
         specifier: ^12.10.3
         version: 12.10.3
@@ -26,10 +29,10 @@ importers:
         version: 5.4.5
       vite:
         specifier: ^5.0.7
-        version: 5.2.11
+        version: 5.2.11(@types/node@22.7.4)
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(happy-dom@12.10.3)
+        version: 1.6.0(@types/node@22.7.4)(happy-dom@12.10.3)
       wireit:
         specifier: ^0.14.7
         version: 0.14.7
@@ -278,6 +281,9 @@ packages:
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
+
+  '@types/node@22.7.4':
+    resolution: {integrity: sha512-y+NPi1rFzDs1NdQHHToqeiX2TIS79SWEAw9GYhkkx8bD0ChpfqC+n2j5OXOCpzfojBEBt6DnEnnG9MY0zk1XLg==}
 
   '@vitest/expect@1.6.0':
     resolution: {integrity: sha512-ixEvFVQjycy/oNgHjqsL6AZCDduC+tflRluaHIzKIsdbzkLn2U/iBnVeJwB6HsIjQBdfMR8Z0tRxKUsvFJEeWQ==}
@@ -676,6 +682,9 @@ packages:
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
 
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
   vite-node@1.6.0:
     resolution: {integrity: sha512-de6HJgzC+TFzOu0NTC4RAIsyf/DY/ibWDYQUcuEA84EMHhcefTUGkjFHKKEJhQN4A+6I0u++kr3l36ZF2d7XRw==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -911,6 +920,10 @@ snapshots:
   '@sinclair/typebox@0.27.8': {}
 
   '@types/estree@1.0.5': {}
+
+  '@types/node@22.7.4':
+    dependencies:
+      undici-types: 6.19.8
 
   '@vitest/expect@1.6.0':
     dependencies:
@@ -1322,13 +1335,15 @@ snapshots:
 
   ufo@1.5.3: {}
 
-  vite-node@1.6.0:
+  undici-types@6.19.8: {}
+
+  vite-node@1.6.0(@types/node@22.7.4):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.11
+      vite: 5.2.11(@types/node@22.7.4)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -1339,15 +1354,16 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.2.11:
+  vite@5.2.11(@types/node@22.7.4):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.17.2
     optionalDependencies:
+      '@types/node': 22.7.4
       fsevents: 2.3.3
 
-  vitest@1.6.0(happy-dom@12.10.3):
+  vitest@1.6.0(@types/node@22.7.4)(happy-dom@12.10.3):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -1366,10 +1382,11 @@ snapshots:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.2.11
-      vite-node: 1.6.0
+      vite: 5.2.11(@types/node@22.7.4)
+      vite-node: 1.6.0(@types/node@22.7.4)
       why-is-node-running: 2.2.2
     optionalDependencies:
+      '@types/node': 22.7.4
       happy-dom: 12.10.3
     transitivePeerDependencies:
       - less

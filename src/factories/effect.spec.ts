@@ -1,7 +1,7 @@
 import { effect } from '@auzmartist/hybrids-helpers'
 import { define } from 'hybrids'
 import { describe, expect, test } from 'vitest'
-import { setup, tick } from '../test'
+import { setup, tick } from '../test/index.js'
 
 describe('effect', () => {
   define<any>({

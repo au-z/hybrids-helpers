@@ -1,17 +1,10 @@
 import { define } from 'hybrids'
-import { describe, expect, it, test } from 'vitest'
-import { getset, ro, truthy } from '.'
-import { setup, tick } from './test'
+import { describe, expect, test } from 'vitest'
+import { truthy } from './observe.js'
+import { setup, tick } from './test/index.js'
+import { ro } from './factories/ro.js'
 
 describe('factories', () => {
-  describe('getset', () => {
-    it('returns a Descriptor', () => {
-      const desc = getset('')
-      expect(desc['get']).not.toBeUndefined
-      expect(desc['set']).not.toBeUndefined
-    })
-  })
-
   describe('truthy observer', () => {
     define<any>({
       tag: 'my-test',

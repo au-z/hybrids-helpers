@@ -1,5 +1,5 @@
 import { Descriptor, Property } from 'hybrids'
-import { propertyToDescriptor } from 'src/utils'
+import { propertyToDescriptor } from '@src/index.js'
 
 /**
  * Run one or more effects when the property changes

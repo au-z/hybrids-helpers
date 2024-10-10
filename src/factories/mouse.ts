@@ -11,7 +11,7 @@ export function mouse<E>({
   target,
   clamp,
 }: {
-  target?: HTMLElement
+  target?: Element
   clamp?: boolean
 } = {}): Descriptor<E, { x: number; y: number }> {
   return {

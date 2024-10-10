@@ -3,12 +3,14 @@ import { Descriptor } from 'hybrids'
 
 /**
  * Get a reference to a slotted light-DOM node
- * @param name the slot name to select
+ * @param name the slot name to select. If not provided, selects the default slotted nodes.
  * @returns a hybrid descriptor binding a slotted node to the host
  */
-export function slotted<E>(name?: string): Descriptor<E, Element | null> {
-  return {
-    value: (host: E & HTMLElement) => host.querySelector(name ? `*[slot="${name}"]` : '*:not([slot])'),
-    connect: mo({ childList: true }),
-  }
+export function slotted(name?: string): Descriptor<unknown, Element | null> {
+  return mo(
+    {
+      value: (host: HTMLElement) => host.querySelector(name ? `*[slot="${name}"]` : '*:not([slot])'),
+    },
+    { childList: true }
+  )
 }

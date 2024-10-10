@@ -15,7 +15,7 @@ export function emit<T>(host: Element, event: string, detail: T, init: CustomEve
  * @param handler - the event handler to wrap
  * @returns a new event handler that stops propagation
  */
-export const stop = <H, T = any>(handler: (host: H, e: CustomEvent<T>) => void) => {
+export const stop = <H extends HTMLElement, T = any>(handler: (host: H, e: CustomEvent<T>) => void) => {
   return (host: H & HTMLElement, e: CustomEvent<T>) => {
     e.stopPropagation()
     handler(host, e)

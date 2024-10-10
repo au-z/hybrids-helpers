@@ -1,7 +1,7 @@
 import { ref } from '@auzmartist/hybrids-helpers'
 import { define, html } from 'hybrids'
 import { describe, expect, test } from 'vitest'
-import { setup } from '../test'
+import { setup } from '../test/index.js'
 
 describe('ref', () => {
   define<any>({
