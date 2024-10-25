@@ -41,7 +41,6 @@ export * from './template/hy.js'
 
 // utils
 export { propertyToDescriptor } from './utils.js'
-
 /**
  * @returns type-curried helpers for building Hybrid components.
  */
@@ -74,15 +73,19 @@ export const HybridBuilder = <E extends HTMLElement>() => ({
   prevent: <T = any>(handler: (host: E, e: CustomEvent<T>) => void) => prevent(handler),
 
   // transient host type to render and safe define
-  define: (component: Component<E>): Component<E> | null => {
-    if (!window.customElements.get(component.tag)) {
-      return hy_define(component)
-    } else {
-      console.warn(`Custom Element '${component.tag}' already defined.`)
-      return null
-    }
-  },
+  define: safeDefine<E>,
+  // transient host type to render and safe compile
+  compile: hy_define.compile<E>,
 })
+
+function safeDefine<E extends HTMLElement>(component: Component<E>) {
+  if (!window.customElements.get(component.tag)) {
+    return hy_define(component)
+  } else {
+    console.warn(`Custom Element '${component.tag}' already defined.`)
+    return null
+  }
+}
 
 /**
  * Build and define a web component with helpers.
@@ -95,4 +98,18 @@ export function build<E extends HTMLElement>(
   const builder = HybridBuilder<E>()
   const component = factory(builder)
   return builder.define(component)
+}
+
+/**
+ * Build and compile a web component with helpers.
+ * The component is not defined in the custom elements registry.
+ * To define the component you can run `customElements.define(tag, component)`.
+ * @param factory a function which returns a component definition.
+ * @returns the defined comoonent or null if the tag is already defined.
+ */
+build.compile = <E extends HTMLElement>(factory: (builder: ReturnType<typeof HybridBuilder<E>>) => Component<E>) => {
+  const builder = HybridBuilder<E>()
+  const component = factory(builder)
+  const hybrid = builder.compile(component)
+  return ()
 }

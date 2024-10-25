@@ -3,6 +3,8 @@ import { build, hy, mo, nnull, ref, refs, slotted } from '../index.js'
 
 interface DemoComponent extends HTMLElement {
   bool: boolean
+  number: number
+  double: number
   string: string
   formatted: string
   object: { foo: string }
@@ -21,13 +23,15 @@ interface DemoComponent extends HTMLElement {
 export const DemoComponent = build<DemoComponent>(({ prop, effect, be, disposable, mouse, reflect, ro, set }) => ({
   tag: 'demo-component',
   bool: false,
+  number: 0,
+  double: be((host) => (host.number *= 2)),
 
   // any property (equal to {value: 'test_string'})
   string: prop({ value: 'test_string' }),
 
   // create a computed value, also register an effect every time the property changes
   formatted: effect(
-    be(({ string }) => `Formatted: ${string}`),
+    ({ string }) => `Formatted: ${string}`,
     () => console.log(`'formatted' was updated`)
   ),
 
@@ -58,21 +62,16 @@ export const DemoComponent = build<DemoComponent>(({ prop, effect, be, disposabl
   mouse: mouse(),
 
   // reflect a computed position string to an attribute
-  xy: reflect(be(({ mouse }) => `${mouse.x}, ${mouse.y}`)),
+  xy: reflect(({ mouse }) => `${mouse.x}, ${mouse.y}`),
 
   // recompute when the host is resized
-  dims: ro(
-    be((host) => {
-      const { width, height } = host.getBoundingClientRect()
-      return { width, height }
-    })
-  ),
+  dims: ro((host) => {
+    const { width, height } = host.getBoundingClientRect()
+    return { width, height }
+  }),
 
   // keep a live reference to light DOM children
-  directChildren: mo(
-    be((host, last) => (last ? last : Array.from(host.children))),
-    { childList: true }
-  ),
+  directChildren: mo((host, last) => (last ? last : Array.from(host.children)), { childList: true }),
   slotted: slotted(),
 
   render: ({ bool, string, formatted, object, mouse, dims, directChildren }) =>
