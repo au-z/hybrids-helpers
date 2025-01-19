@@ -1,4 +1,12 @@
-import { Component, Descriptor as Desc, define as hy_define, Property as Prop, RenderFunction } from 'hybrids'
+import {
+  Component,
+  Descriptor as Desc,
+  Descriptor,
+  define as hy_define,
+  Property as Prop,
+  RenderFunction,
+  html,
+} from 'hybrids'
 import { emit, prevent, stop } from './events.js'
 import { Disposable as Disp, disposable, Fn, Type } from './factories/disposable.js'
 import { effect } from './factories/effect.js'
@@ -10,6 +18,8 @@ import { ref, refs } from './refs/ref.js'
 import { slotted } from './refs/slotted.js'
 import { hy } from './template/hy.js'
 import { set } from './template/set.js'
+import { _Alpine, alpine } from './template/alpine/alpine.js'
+type Connect<E, V = undefined> = Descriptor<E, V>['connect']
 
 // descriptor factories
 export * from './connect/connect.js'
@@ -34,6 +44,7 @@ export * from './connect/listen.js'
 // rendering
 export * from './template/light.js'
 export * from './template/render.js'
+export * from './template/alpine/alpine.js'
 
 // templating
 export * from './events.js'
@@ -63,6 +74,9 @@ export const HybridBuilder = <E extends HTMLElement>() => ({
   slotted,
 
   render: (renderer: RenderFunction<E>) => renderer,
+  shadow: (value: RenderFunction<E>) => ({ value, shadow: true }),
+  alpine: _Alpine ? alpine<E> : <E>(el: E) => console.warn('alpine.config must be called first.'),
+  html: _Alpine ? alpine<E> : html<E>,
   // template helpers
   hy,
 
@@ -93,10 +107,34 @@ function safeDefine<E extends HTMLElement>(component: Component<E>) {
  * @returns the defined component or null if the tag is already defined.
  */
 export function build<E extends HTMLElement>(
-  factory: (builder: ReturnType<typeof HybridBuilder<E>>) => Component<E>
+  factory: (
+    builder: ReturnType<typeof HybridBuilder<E>> & {
+      onconnect: (...connectors: Connect<E>[]) => void
+      ondisconnect: (...disconnectors: Connect<E>[]) => void
+    }
+  ) => Component<E>
 ): Component<E> | null {
   const builder = HybridBuilder<E>()
-  const component = factory(builder)
+
+  // orphan connect and disconnect callbacks
+  const connectCallbacks = []
+  const disconnectCallbacks = []
+  const onconnect = (...connectors: Connect<E>[]) => connectCallbacks.push(...connectors)
+  const ondisconnect = (...disconnectors: Connect<E>[]) => disconnectCallbacks.push(...disconnectors)
+
+  const component = factory({ ...builder, onconnect, ondisconnect })
+  if (connectCallbacks.length > 0 || disconnectCallbacks.length > 0) {
+    component['__builder_connect__'] = {
+      value: undefined,
+      connect(host: E, key: string, invalidate) {
+        const disconnectors = connectCallbacks.map((connector) => connector(host, key, invalidate))
+        return () => {
+          disconnectors.forEach((disconnect) => disconnect())
+          disconnectCallbacks.forEach((disconnector) => disconnector(host, key, invalidate))
+        }
+      },
+    }
+  }
   return builder.define(component)
 }
 
@@ -110,6 +148,5 @@ export function build<E extends HTMLElement>(
 build.compile = <E extends HTMLElement>(factory: (builder: ReturnType<typeof HybridBuilder<E>>) => Component<E>) => {
   const builder = HybridBuilder<E>()
   const component = factory(builder)
-  const hybrid = builder.compile(component)
-  return ()
+  return builder.compile(component)
 }

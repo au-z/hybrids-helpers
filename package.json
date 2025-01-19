@@ -87,6 +87,8 @@
   },
   "devDependencies": {
     "@types/node": "^22.7.4",
+    "alpinejs": "^3.7.0",
+    "@types/alpinejs": "^3.7.0",
     "happy-dom": "^12.10.3",
     "rollup-plugin-analyzer": "^4.0.0",
     "typedoc": "^0.25.3",
