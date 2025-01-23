@@ -8,7 +8,7 @@ interface TestAlpine extends HTMLElement {
   double: number
 }
 
-const TestAlpine = build<TestAlpine>(({ shadow, html, reflect }) => ({
+const TestAlpine = build<TestAlpine>(({ html, reflect, xhost }) => ({
   tag: 'test-alpine',
   disabled: reflect(false),
   count: {
@@ -17,34 +17,27 @@ const TestAlpine = build<TestAlpine>(({ shadow, html, reflect }) => ({
       setInterval(() => ++host[key], 500)
     },
   },
-  double: ({ count }) => count * 2,
-  render: shadow(
-    ({ disabled, double }) => html`
-      <!--
-        x-host is a custom directive used to mirror reactive data from Hybrids to Alpine scoped data.
-        This allows Alpine to react to changes in the Hybrids host data.
+  double: xhost<number>(({ count }) => count * 2),
+  /**
+   * x-host is a custom directive used to mirror reactive data from Hybrids to Alpine scoped data.
+   * This allows Alpine to react to changes in the Hybrids host data.
 
-        Use x-host without an attribute value ("x-host") to bind all non-native HTMLElement properties to the Alpine scope.
+   * Use x-host without an attribute value ("x-host") to bind all non-native HTMLElement properties to the Alpine scope.
 
-        Re-renders are still triggered by Hybrids' reactivity system.
-        If your component is not re-rendering, check that the re-render is being triggered.
-      -->
-      <div x-host="['disabled', 'double']" x-data="{ open: false }">
-        <div x-show="!disabled" :class="open ? '' : 'hidden'">
-          <!-- 'open' acts like a "private" variable -->
-          <button @click="open = !open">Toggle Open</button>
-          <div x-show="open">Open</div>
-          <div x-show="!open">Closed</div>
-        </div>
-        <!-- reactive data sharing between Hybrids and Alpine -->
-        <span x-show="disabled"><b>Disabled</b></span>
-        <!-- Hybrids onX handlers update Hybrids data directly -->
-        <button onclick="${toggleDisabled}" x-text="disabled ? 'Enable: ' + double : 'Disable: ' + double"></button>
+   * Re-renders are still triggered by Hybrids' reactivity system.
+   * If your component is not re-rendering a getter, try to wrap it in 'xhost'
+   */
+  render: () => html`
+    <div x-host="['disabled', 'double']" x-data="{ open: false }">
+      <div x-show="!disabled" :class="open ? '' : 'hidden'">
+        <!-- 'open' acts like a "private" variable -->
+        <button @click="open = !open">Toggle Open</button>
+        <div x-show="open">Open</div>
+        <div x-show="!open">Closed</div>
       </div>
-    `
-  ),
+      <!-- reactive data sharing between Hybrids and Alpine -->
+      <span x-show="disabled"><b>Disabled</b></span>
+      <button @click="disabled = !disabled" x-text="disabled ? 'Enable: ' + double : 'Disable: ' + double"></button>
+    </div>
+  `,
 }))
-
-function toggleDisabled(host: TestAlpine) {
-  host.disabled = !host.disabled
-}

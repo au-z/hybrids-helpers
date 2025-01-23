@@ -1,11 +1,9 @@
+import { Descriptor, RenderDescriptor, UpdateFunctionWithMethods } from 'hybrids'
 /*
  * A direct port of the old Hybrids 6.1 render factory
  * https://hybrids.js.org/#/migration?id=render-factory
  */
-
-import { UpdateFunctionWithMethods } from 'hybrids'
-
-export default function render<E>(fn: (host: E & HTMLElement) => UpdateFunctionWithMethods<E>, customOptions = {}) {
+export function render6<E>(fn: (host: E & HTMLElement) => UpdateFunctionWithMethods<E>, customOptions = {}) {
   if (typeof fn !== 'function') {
     throw TypeError(`The first argument must be a function: ${typeof fn}`)
   }
@@ -33,4 +31,65 @@ export default function render<E>(fn: (host: E & HTMLElement) => UpdateFunctionW
       flush()
     },
   }
+}
+
+/**
+ * A direct port of the old Hybrids 9 render factory
+ * https://hybrids.js.org/#/migration?id=render-factory
+ */
+export function render9<E>(desc: RenderDescriptor<E>) {
+  if (desc.reflect) {
+    throw TypeError(`'reflect' option is not supported for 'render' property`)
+  }
+
+  const { value: fn, connect, observe } = desc
+
+  if (typeof fn !== 'function') {
+    throw TypeError(`Value for 'render' property must be a function: ${typeof fn}`)
+  }
+
+  const result = {
+    connect,
+    observe: observe
+      ? (host, flush, lastFlush) => {
+          observe(host, flush(), lastFlush)
+        }
+      : (host, flush) => {
+          flush()
+        },
+  } as Descriptor<E, any>
+
+  const shadow = desc.shadow
+    ? {
+        mode: (<ShadowRootInit>desc.shadow).mode || 'open',
+        delegatesFocus: (<ShadowRootInit>desc.shadow).delegatesFocus || false,
+      }
+    : desc.shadow
+
+  if (shadow) {
+    result.value = (host) => {
+      const target = host.shadowRoot || host.attachShadow(<ShadowRootInit>shadow)
+      const update = fn(host)
+
+      return () => {
+        update(host, target)
+        return target
+      }
+    }
+  } else if (shadow === false) {
+    result.value = (host) => {
+      const update = fn(host)
+      return () => {
+        update(host, host)
+        return host
+      }
+    }
+  } else {
+    result.value = (host) => {
+      const update = fn(host)
+      return () => update(host)
+    }
+  }
+
+  return result
 }

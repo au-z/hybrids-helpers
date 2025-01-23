@@ -12,7 +12,7 @@ export function alpine<H>(string, ...parts): UpdateFunctionWithMethods<H> {
   // assign Hybrids html helpers to the Alpine template engine fn
   return Object.assign(function (host: H & HTMLElement, target?: ShadowRoot | Text | H): void {
     fn(host, target)
-    _Alpine.initTree(host.shadowRoot)
+    _Alpine.initTree(host.shadowRoot ?? host)
   }, fn)
 }
 

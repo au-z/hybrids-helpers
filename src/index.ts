@@ -19,6 +19,7 @@ import { slotted } from './refs/slotted.js'
 import { hy } from './template/hy.js'
 import { set } from './template/set.js'
 import { _Alpine, alpine } from './template/alpine/alpine.js'
+import { xhost } from './template/alpine/x-host.js'
 type Connect<E, V = undefined> = Descriptor<E, V>['connect']
 
 // descriptor factories
@@ -65,7 +66,7 @@ export const HybridBuilder = <E extends HTMLElement>() => ({
   mo: <V = any>(prop: Prop<E, V>, init: MutationObserverInit & { callback?: HostedMutationCallback<E> }) =>
     mo<V, E>(prop, init),
   mouse: mouse<E>,
-  reflect: <V>(prop: Prop<E, V>, bidirectional = false) => reflect<E, V>(prop, bidirectional),
+  reflect: <V = any>(prop: Prop<E, V>, bidirectional = false) => reflect<E, V>(prop, bidirectional),
   ro: <V = any>(prop: Prop<E, V>) => ro(prop),
 
   // refs
@@ -77,6 +78,8 @@ export const HybridBuilder = <E extends HTMLElement>() => ({
   shadow: (value: RenderFunction<E>) => ({ value, shadow: true }),
   alpine: _Alpine ? alpine<E> : <E>(el: E) => console.warn('alpine.config must be called first.'),
   html: _Alpine ? alpine<E> : html<E>,
+  // Alpine bindings
+  xhost: <V = any>(prop: Prop<E, V>) => xhost(prop),
   // template helpers
   hy,
 
