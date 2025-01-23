@@ -1,8 +1,7 @@
-import { describe, test, expect, beforeAll, vi } from 'vitest'
-import { alpine } from './alpine.js'
+import { tick } from '@src/test/index.js'
 import Alpine from 'alpinejs'
-import { setup, tick } from '@src/test/index.js'
-import { build } from '@src/index.js'
+import { beforeAll, describe, expect, test, vi } from 'vitest'
+import { alpine } from './alpine.js'
 
 describe('alpine', () => {
   test('should throw error if Alpine is not initialized', () => {

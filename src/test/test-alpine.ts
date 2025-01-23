@@ -1,6 +1,5 @@
 import Alpine from 'alpinejs'
 import { alpine, build } from '../index.js'
-
 alpine.config(Alpine)
 
 interface TestAlpine extends HTMLElement {
@@ -24,10 +23,11 @@ const TestAlpine = build<TestAlpine>(({ shadow, html, reflect }) => ({
       <!--
         x-host is a custom directive used to mirror reactive data from Hybrids to Alpine scoped data.
         This allows Alpine to react to changes in the Hybrids host data.
-        Re-renders are still triggered by Hybrids' reactivity system.
-        If your comonent is not re-rendering, check that the re-render is being triggered.
 
         Use x-host without an attribute value ("x-host") to bind all non-native HTMLElement properties to the Alpine scope.
+
+        Re-renders are still triggered by Hybrids' reactivity system.
+        If your component is not re-rendering, check that the re-render is being triggered.
       -->
       <div x-host="['disabled', 'double']" x-data="{ open: false }">
         <div x-show="!disabled" :class="open ? '' : 'hidden'">
@@ -38,7 +38,7 @@ const TestAlpine = build<TestAlpine>(({ shadow, html, reflect }) => ({
         </div>
         <!-- reactive data sharing between Hybrids and Alpine -->
         <span x-show="disabled"><b>Disabled</b></span>
-        <!-- Hybrids onX handler to update Hybrids data directly -->
+        <!-- Hybrids onX handlers update Hybrids data directly -->
         <button onclick="${toggleDisabled}" x-text="disabled ? 'Enable: ' + double : 'Disable: ' + double"></button>
       </div>
     `
@@ -46,6 +46,5 @@ const TestAlpine = build<TestAlpine>(({ shadow, html, reflect }) => ({
 }))
 
 function toggleDisabled(host: TestAlpine) {
-  console.log('toggleDisabled')
   host.disabled = !host.disabled
 }

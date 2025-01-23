@@ -1,6 +1,5 @@
-import { html, UpdateFunctionWithMethods } from 'hybrids'
-import { ElementWithXAttributes, WalkerCallback } from './alpine-types.js'
 import Alpine, { DirectiveCallback } from 'alpinejs'
+import { html, UpdateFunctionWithMethods } from 'hybrids'
 import { xHost } from './x-host.js'
 export let _Alpine
 
@@ -18,17 +17,25 @@ export function alpine<H>(string, ...parts): UpdateFunctionWithMethods<H> {
 }
 
 alpine.engine = _Alpine?.version
+alpine.host = xHost
 
 /**
  * Configure the Alpine engine
  * @param inst An instance of the Alpine engine
  */
-alpine.config = function (inst: typeof Alpine) {
+alpine.config = function (
+  inst: typeof Alpine,
+  directives: Record<string, DirectiveCallback> = {
+    host: xHost,
+  }
+) {
   if (!!_Alpine) {
     console.warn('Alpine.config should only be called once.')
   }
   // register custom hybrids directives
-  inst.directive('host', xHost(inst))
+  for (const [name, callback] of Object.entries(directives)) {
+    inst.directive(name, callback)
+  }
   _Alpine = inst
 
   alpine.engine = `alpinejs_${_Alpine?.version}`
