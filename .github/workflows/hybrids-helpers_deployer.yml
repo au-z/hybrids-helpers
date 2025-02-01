@@ -16,11 +16,11 @@ jobs:
         node-version: [20]
     steps:
       - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v4
         with:
-          version: 7
+          version: 9
       - name: Use Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
@@ -33,7 +33,7 @@ jobs:
         with:
           folder: docs
           bucket: ${{ secrets.S3_BUCKET }}/projects/hybrids-helpers
-          dlete-removed: projects/hybrids-helpers/**
+          delete-removed: projects/hybrids-helpers/**
           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
           no-cache: true
           private: true
