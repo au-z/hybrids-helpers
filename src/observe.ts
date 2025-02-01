@@ -13,6 +13,7 @@ import { Descriptor } from 'hybrids'
  *   },
  * })
  * ```
+ * @category Descriptor:Observe
  * @typeParam E - host element type
  * @typeParam V - property value type
  * @param observers a list of 'observe' Descriptor functions to execute
@@ -30,6 +31,7 @@ export const forEach =
  *   color: { value: 'red', observe: cssVar('--my-element-color') },
  * })
  * ```
+ * @category Descriptor:Observe
  * @typeParam E - host element type
  * @typeParam V - property value type
  * @param customProperty CSS custom property name
@@ -55,6 +57,7 @@ export const cssVar =
  *   },
  * })
  * ```
+ * @category Descriptor:Observe
  * @typeParam E - host element type
  * @typeParam V - property value type
  * @param observe 'observe' function to execute when the value is not null or undefined
@@ -84,6 +87,7 @@ export function nnull<E, V>(
  *   },
  * })
  * ```
+ * @category Descriptor:Observe
  * @typeParam E - host element type
  * @typeParam V - property value type
  * @param observe 'observe' function to execute when the value is truthy

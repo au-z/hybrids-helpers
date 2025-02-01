@@ -3,6 +3,26 @@ import { html, UpdateFunctionWithMethods } from 'hybrids'
 import { xHost } from './x-host.js'
 export let _Alpine
 
+/**
+ * Render a Hybrids template powered by Alpine.
+ * @category Alpine
+ * @returns the html template function with the Alpine engine.
+ *
+ * @example ```
+ * import {alpine} from '@auzmartist/hybrids-helpers'
+ * alpine.config(Alpine)
+ *
+ * define({
+ *   tag: 'my-component',
+ *   render: alpine`
+ *     <div x-data="{ open: false }" :class="open ? '' : 'hidden'">
+ *       <button @click="open = !open">Toggle</button>
+ *       <div x-show="open">Hello</div>
+ *     </div>
+ *   `,
+ * })
+ * ```
+ */
 export function alpine<H>(string, ...parts): UpdateFunctionWithMethods<H> {
   if (!_Alpine) {
     throw new Error('Alpine.config must be called first.')
@@ -16,15 +36,30 @@ export function alpine<H>(string, ...parts): UpdateFunctionWithMethods<H> {
   }, fn)
 }
 
+/**
+ * Alpine engine version (alpinejs_x.x.x)
+ * @category Alpine
+ */
 alpine.engine = _Alpine?.version
+/**
+ * The special Alpine host directive for interop between Hybrids getters and Alpine data
+ */
 alpine.host = xHost
 
 /**
  * Configure the Alpine engine
- * @param inst An instance of the Alpine engine
+ * @function
+ * @category Alpine
+ * @param Alp An instance of the Alpine engine
+ * @param directives A record of custom Alpine directives to use with Hybrids
+ *
+ * @example ```
+ *   import { alpine } from '@auzmartist/hybrids-helpers'
+ *   alpine.config(Alpine)
+ * ```
  */
 alpine.config = function (
-  inst: typeof Alpine,
+  Alp: typeof Alpine,
   directives: Record<string, DirectiveCallback> = {
     host: xHost,
   }
@@ -34,9 +69,9 @@ alpine.config = function (
   }
   // register custom hybrids directives
   for (const [name, callback] of Object.entries(directives)) {
-    inst.directive(name, callback)
+    Alp.directive(name, callback)
   }
-  _Alpine = inst
+  _Alpine = Alp
 
   alpine.engine = `alpinejs_${_Alpine?.version}`
 }

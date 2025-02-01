@@ -2,6 +2,7 @@ import { Descriptor } from 'hybrids'
 
 /**
  * Track the mouse position relative to the target element.
+ * @category Factories
  * @param options mouse tracking options
  * @param options.target target element to track mouse position. defaults to the host element
  * @param options.clamp whether to clamp the mouse position to the target element's bounding box

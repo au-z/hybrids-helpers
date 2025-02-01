@@ -8,7 +8,7 @@ import { Descriptor } from 'hybrids'
  *   array: getset([]),
  * })
  * ```
- * @category Descriptors
+ * @category Factories
  * @typeParam E - host element type
  * @typeParam V - property value type
  * @param defaultValue the default value

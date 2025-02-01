@@ -7,6 +7,7 @@ export interface HostedMutationCallback<E extends HTMLElement = HTMLElement> {
 
 /**
  * Wrap a Property with a mutation observer which will invalidate on mutation.
+ * @category Factories
  * @param prop any Hybrids property
  * @param init the mutation observer init options
  * @returns a dscriptor which will invalidate on mutation

@@ -1,5 +1,5 @@
 import { isClass } from '../utils.js'
-import { Descriptor } from 'hybrids'
+import { Descriptor, Property } from 'hybrids'
 
 export interface Type<T> extends Function {
   new (...args: any[]): T
@@ -25,7 +25,7 @@ export interface Disposable {
  *   return { dispose: ... }
  * }
  * ```
- * @category Descriptors
+ * @category Factories
  * @typeParam E - host element type
  * @typeParam V - property type which extends Disposable
  * @param Ctor a Disposable constructor or function which returns a Disposable.
@@ -34,7 +34,7 @@ export interface Disposable {
  */
 export const disposable = <E, V extends Disposable = Disposable>(
   Ctor: Type<Disposable> | Fn<Disposable>
-): Descriptor<E, V> => ({
+): Property<E, V> => ({
   value: undefined,
   connect: (host, key, invalidate) => {
     const instance = isClass(Ctor)

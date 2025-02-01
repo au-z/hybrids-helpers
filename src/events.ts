@@ -1,5 +1,6 @@
 /**
  * dispatch a CustomEvent from the host element which bubbles and is composed
+ * @category Events
  * @param host the host element
  * @param event the event name
  * @param detail the CustomEvent detail
@@ -12,6 +13,7 @@ export function emit<T>(host: Element, event: string, detail: T, init: CustomEve
 
 /**
  * wrap an event handler to stop propagation
+ * @category Events
  * @param handler - the event handler to wrap
  * @returns a new event handler that stops propagation
  */
@@ -24,6 +26,7 @@ export const stop = <H extends HTMLElement, T = any>(handler: (host: H, e: Custo
 
 /**
  * wrap an event handler to prevent the default action
+ * @category Events
  * @param handler - the event handler to wrap
  * @returns a new event handler that prevents the default action
  */

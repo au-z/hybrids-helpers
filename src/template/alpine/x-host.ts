@@ -4,6 +4,7 @@ const XHOST = '_x_host_proxy_'
 
 /**
  * Alpine directive which binds select properties to the existing Alpine data scope.
+ * @category Alpine
  * @param el the element to which to apply data
  */
 export function xHost(el, { expression }, { Alpine, evaluate }) {
@@ -24,10 +25,19 @@ function getNearestHybridsHost(el) {
   return null
 }
 
+const ignore = {
+  _x_marker: true,
+}
+
 function hostData(el, props: string[], seed: object, Alpine) {
   for (const key in el) {
+    // ignore native HTMLElement properties
     if ((props?.length == null && key in HTMLElement.prototype) || key === 'render') continue
+    // only bind selected properties (if provided)
     if (props?.length != null && !props.includes(key)) continue
+    // ignore Alpine properties
+    if (key in ignore) continue
+
     addToReactive(seed, el, key, Alpine)
   }
   return seed
@@ -78,6 +88,7 @@ function addToReactive<E extends HTMLElement>(data: Record<string, any>, el: E, 
 
 /**
  * Bind a computed property to the Alpine data scope on update.
+ * @category Alpine
  * @param property any Hybrids property
  */
 export const xhost = <E, V>(property: Property<E, V>) => {
@@ -87,9 +98,12 @@ export const xhost = <E, V>(property: Property<E, V>) => {
     ...descriptor,
     connect(host, _key) {
       key = _key
-      if (!host[XHOST]) {
-        console.warn('Element does not use the x-host Alpine diretive.')
-      }
+      // alpine needs to render once first before we can check for x-host
+      requestAnimationFrame(() => {
+        if (!host[XHOST]) {
+          console.warn('Element does not use the x-host Alpine directive.')
+        }
+      })
     },
     observe(host, value, last) {
       if (value !== last && host[XHOST]) {

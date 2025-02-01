@@ -1,5 +1,5 @@
 import { html } from 'hybrids'
-import { build, hy, mo, nnull, ref, refs, slotted } from '../index.js'
+import { build, hy, mo, nnull, ref, refs, slotted } from '@auzmartist/hybrids-helpers'
 
 interface DemoComponent extends HTMLElement {
   bool: boolean
@@ -30,7 +30,7 @@ export const DemoComponent = build<DemoComponent>(({ prop, effect, be, disposabl
   string: prop({ value: 'test_string' }),
 
   // create a computed value, also register an effect every time the property changes
-  formatted: effect(
+  formatted: effect<string>(
     ({ string }) => `Formatted: ${string}`,
     () => console.log(`'formatted' was updated`)
   ),
@@ -62,10 +62,10 @@ export const DemoComponent = build<DemoComponent>(({ prop, effect, be, disposabl
   mouse: mouse(),
 
   // reflect a computed position string to an attribute
-  xy: reflect(({ mouse }) => `${mouse.x}, ${mouse.y}`),
+  xy: reflect<string>(({ mouse }) => `${mouse.x}, ${mouse.y}`),
 
   // recompute when the host is resized
-  dims: ro((host) => {
+  dims: ro<{ width: number; height: number }>((host) => {
     const { width, height } = host.getBoundingClientRect()
     return { width, height }
   }),

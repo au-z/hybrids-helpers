@@ -1,3 +1,10 @@
+/**
+ * Set a property on the host element from an event.
+ * @category Events
+ * @param property the property to assign the extracted value
+ * @param extractor a function to extract the value from the event. Defaults reasonably.
+ * @returns the event handler
+ */
 export function set<E extends HTMLElement>(
   property: keyof E,
   extractor: (e: Event) => E[typeof property] = extractEventValue

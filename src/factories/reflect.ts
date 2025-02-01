@@ -3,6 +3,7 @@ import { propertyToDescriptor } from '../utils.js'
 
 /**
  * Reflect any property to an attribute on the host
+ * @category Factories
  * @param prop the property to reflect
  * @param bidirectional if true, sets the property when the attribute changes
  * @returns a Hybrids Descriptor with the reflection side-effect

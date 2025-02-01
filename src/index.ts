@@ -45,7 +45,9 @@ export * from './connect/listen.js'
 // rendering
 export * from './template/light.js'
 export * from './template/render.js'
+// rendering: Alpine
 export * from './template/alpine/alpine.js'
+export * from './template/alpine/x-host.js'
 
 // templating
 export * from './events.js'
@@ -53,7 +55,11 @@ export * from './template/hy.js'
 
 // utils
 export { propertyToDescriptor } from './utils.js'
+
 /**
+ * Create a type-curried builder for Hybrid components.
+ * @category Define
+ * @typeParam E - host element type
  * @returns type-curried helpers for building Hybrid components.
  */
 export const HybridBuilder = <E extends HTMLElement>() => ({
@@ -70,8 +76,8 @@ export const HybridBuilder = <E extends HTMLElement>() => ({
   ro: <V = any>(prop: Prop<E, V>) => ro(prop),
 
   // refs
-  ref,
-  refs,
+  ref: ref<E>,
+  refs: refs<E>,
   slotted,
 
   render: (renderer: RenderFunction<E>) => renderer,
@@ -79,13 +85,15 @@ export const HybridBuilder = <E extends HTMLElement>() => ({
   alpine: _Alpine ? alpine<E> : <E>(el: E) => console.warn('alpine.config must be called first.'),
   html: _Alpine ? alpine<E> : html<E>,
   // Alpine bindings
-  xhost: <V = any>(prop: Prop<E, V>) => xhost(prop),
+  xhost: <V = any>(prop: Prop<E, V>) => xhost<E, V>(prop),
   // template helpers
   hy,
 
   // events
   emit,
-  set: (property: keyof E, extractor?: (e: Event) => E[typeof property]) => set<E>(property, extractor),
+  // template event handlers
+  set: <Ev extends Event = Event>(property: keyof E, extractor?: (e: Ev) => E[typeof property]) =>
+    set<E>(property, extractor),
   stop: <T = any>(handler: (host: E, e: CustomEvent<T>) => void) => stop(handler),
   prevent: <T = any>(handler: (host: E, e: CustomEvent<T>) => void) => prevent(handler),
 
@@ -106,7 +114,10 @@ function safeDefine<E extends HTMLElement>(component: Component<E>) {
 
 /**
  * Build and define a web component with helpers.
+ * @function
+ * @category Define
  * @param factory a function which returns a component definition.
+ * @typeParam E - host element type
  * @returns the defined component or null if the tag is already defined.
  */
 export function build<E extends HTMLElement>(
@@ -145,6 +156,7 @@ export function build<E extends HTMLElement>(
  * Build and compile a web component with helpers.
  * The component is not defined in the custom elements registry.
  * To define the component you can run `customElements.define(tag, component)`.
+ * @category Define
  * @param factory a function which returns a component definition.
  * @returns the defined comoonent or null if the tag is already defined.
  */

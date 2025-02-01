@@ -1,5 +1,9 @@
 import { UpdateFunctionWithMethods, html } from 'hybrids'
 
+/**
+ * A collection of helpers for creating Hybrids templates.
+ * @category Template
+ */
 export const hy = {
   print: (data: any, space?: string | number) => html`<pre>${JSON.stringify(data, null, space)}</pre>`,
   if: <E>(

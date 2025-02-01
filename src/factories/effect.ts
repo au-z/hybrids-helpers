@@ -3,6 +3,7 @@ import { propertyToDescriptor } from '@src/index.js'
 
 /**
  * Run one or more effects when the property changes
+ * @category Factories
  * @param property any Hybrids property
  * @param effects one or more observe functions to execute when the property value changes
  * @returns the resulting Hybrids property

@@ -3,6 +3,7 @@ import { propertyToDescriptor } from '@src/utils.js'
 
 /**
  * Wrap a Property with a resize observer which will invalidate on resize.
+ * @category Factories
  * @param prop any Hybrids property
  * @param options the resize observer options
  * @returns a descriptor which will invalidate on resize
