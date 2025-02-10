@@ -1,6 +1,7 @@
 import Alpine, { DirectiveCallback } from 'alpinejs'
 import { html, UpdateFunctionWithMethods } from 'hybrids'
 import { xHost } from './x-host.js'
+import { xProp } from './x-prop.js'
 export let _Alpine
 
 /**
@@ -45,13 +46,14 @@ alpine.engine = _Alpine?.version
  * The special Alpine host directive for interop between Hybrids getters and Alpine data
  */
 alpine.host = xHost
+alpine.prop = xProp
 
 /**
  * Configure the Alpine engine
  * @function
  * @category Alpine
  * @param Alp An instance of the Alpine engine
- * @param directives A record of custom Alpine directives to use with Hybrids
+ * @param directives A record of custom Alpine directives to use with Hybrids. Default: {host: xHost, prop: xProp}
  *
  * @example ```
  *   import { alpine } from '@auzmartist/hybrids-helpers'
@@ -62,6 +64,7 @@ alpine.config = function (
   Alp: typeof Alpine,
   directives: Record<string, DirectiveCallback> = {
     host: xHost,
+    prop: xProp,
   }
 ) {
   if (!!_Alpine) {

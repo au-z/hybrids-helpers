@@ -298,3 +298,23 @@ build(({xhost, html}) => ({
 }))
 ```
 
+Alpine passes data by attribute by default. This can be imcompatible with property-based templating conventions in other web component libraries. To pass state to HTML element properties, use the x-host directive:
+
+```ts
+alpine`<my-component x-prop.arr="[0, 1, 2]"></my-component>`
+// OR
+alpine`<my-component x-prop="{ arr: [0, 1, 2] }"></my-component>`
+```
+
+Both `x-host` and `x-prop` are included via `alpine.config()` as directives by default. If you'd like to customize Alpine further, adding your own directives, be sure to also include xHost and xProp directives manually:
+
+```ts
+import Alpine from 'alpinejs'
+import { alpine } from '@auzmartist/hybrids-helpers'
+
+alpine.config(Alpine, {
+  host: alpine.xHost,
+  prop: alpine.xProp,
+  custom: ..., // https://alpinejs.dev/advanced/extending
+})
+```

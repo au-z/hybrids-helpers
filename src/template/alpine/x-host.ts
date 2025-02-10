@@ -5,7 +5,6 @@ const XHOST = '_x_host_proxy_'
 /**
  * Alpine directive which binds select properties to the existing Alpine data scope.
  * @category Alpine
- * @param el the element to which to apply data
  */
 export function xHost(el, { expression }, { Alpine, evaluate }) {
   const host = getNearestHybridsHost(el)
@@ -44,7 +43,6 @@ function hostData(el, props: string[], seed: object, Alpine) {
 }
 
 /**
- *
  * @param data reactive data object
  * @param el element with a property to add to reactive data
  * @param key the property name to add
