@@ -58,7 +58,8 @@ describe('hy', () => {
     test(
       'renders the mapped items',
       tree(async (el) => {
-        expect(el.childNodes.map((c) => c.textContent).join('')).toBe('[ ABC ]')
+        const text = Array.from(el.childNodes).map((c: any) => c.textContent).join('')
+        expect(text).toBe('[ ABC ]')
       })
     )
   })

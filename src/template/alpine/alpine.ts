@@ -29,12 +29,15 @@ export function alpine<H>(string, ...parts): UpdateFunctionWithMethods<H> {
     throw new Error('Alpine.config must be called first.')
   }
 
-  let fn = html<H>(string, ...parts)
-  // assign Hybrids html helpers to the Alpine template engine fn
-  return Object.assign(function (host: H & HTMLElement, target?: ShadowRoot | Text | H): void {
-    fn(host, target)
-    _Alpine.initTree(host.shadowRoot ?? host)
-  }, fn)
+  const updateFn = html<H>(string, ...parts)
+
+  return new Proxy(updateFn, {
+    apply(target, thisArg, args: [H & HTMLElement, (ShadowRoot | Text | H)?]) {
+      target.apply(thisArg, args)
+      const [host] = args
+      _Alpine.initTree(host.shadowRoot ?? host)
+    },
+  })
 }
 
 /**
@@ -42,6 +45,14 @@ export function alpine<H>(string, ...parts): UpdateFunctionWithMethods<H> {
  * @category Alpine
  */
 alpine.engine = _Alpine?.version
+
+/**
+ * apply Hybrids html helpers to the Alpine template engine
+ */
+alpine.resolve = html.resolve.bind(html)
+alpine.set = html.set.bind(html)
+alpine.transition = html.transition.bind(html)
+
 /**
  * The special Alpine host directive for interop between Hybrids getters and Alpine data
  */

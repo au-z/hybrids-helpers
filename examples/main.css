@@ -1,0 +1,29 @@
+html,
+body {
+  background: #1d2029;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+button {
+  background: linear-gradient(30deg, #2d2f3a, #363845);
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  letter-spacing: 0.05em;
+}
+
+button:hover {
+  background: linear-gradient(30deg, #3d3f4a, #464855);
+}
+
+button:active {
+  background: linear-gradient(30deg, #4d4f5a, #565865);
+}
+
+a {
+  color: #7af;
+}

@@ -2,7 +2,13 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "NodeNext",
-    "lib": ["esnext", "DOM"],
+    "lib": [
+      "esnext",
+      "DOM"
+    ],
+    "types": [
+      "@vitest/browser/providers/playwright"
+    ],
     "moduleResolution": "NodeNext",
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -14,10 +20,19 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "paths": {
-      "@src/*": ["src/*"],
-      "@auzmartist/hybrids-helpers": ["src/index.ts"],
+      "@src/*": [
+        "./src/*"
+      ],
+      "@auzmartist/hybrids-helpers": [
+        "./src/index.ts"
+      ],
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"],
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
 }

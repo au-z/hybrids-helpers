@@ -6,6 +6,7 @@ const packageDependencies = [...Object.keys(dependencies || {}).map((pkg) => new
 
 export default defineConfig(({ mode }) => {
   return {
+    appType: 'mpa',
     build: {
       emptyOutDir: true,
       minify: false,
@@ -24,9 +25,6 @@ export default defineConfig(({ mode }) => {
         '@src': path.resolve(__dirname, 'src'),
         '@auzmartist/hybrids-helpers': path.resolve(__dirname, 'src/index.ts'),
       },
-    },
-    test: {
-      environment: 'happy-dom',
-    },
+    }
   }
 })

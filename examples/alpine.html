@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1024, initial-scale=1.0" />
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script type="module" src="../src/index.ts"></script>
+    <script type="module" src="./test-fixture.ts"></script>
+    <link rel="stylesheet" href="./main.css" />
+    <title>alpine</title>
+  </head>
+  <body>
+    <script type="module">
+      import { build } from '@auzmartist/hybrids-helpers'
+
+      build(({ html, emit, reflect }) => ({
+        tag: 'test-x-data',
+        open: false,
+        render: () => html`<div x-host x-host x-effect="onopen(open)">
+          <button @click="open = ! open">Toggle Content</button>
+          <div x-show="open">Content...</div>
+        </div>`,
+        onopen: (host) => (val) => emit(host, 'open', val),
+      }))
+
+      build(({ html }) => ({
+        tag: 'test-x-init',
+        render: () => html`<div
+          x-data="{ posts: [] }"
+          x-init="posts = await (new Promise((res) => {
+          setTimeout(() => res([
+            {id: 1, title: '<p>Post 1</p>'},
+            {id: 2, title: '<p>Post 2</p>'}
+          ]), 1000)
+        }))"
+        >
+          <div x-show="posts.length === 0">Loading...</div>
+          <template x-for="post in posts" :key="post.id">
+            <div x-html="post.title"></div>
+          </template>
+        </div>`,
+      }))
+
+      build(({ html, be, effect, emit }) => ({
+        tag: 'test-x-model',
+        text: 'Hello',
+        number: 0,
+        checkbox: false,
+        select: 'option1',
+        textarea: 'Hello',
+        radio: 'option1',
+        color: '#000000',
+        date: '2021-01-01',
+        time: '12:00:00',
+        form: effect(
+          (host) => ({
+            text: host.text,
+            number: host.number,
+            checkbox: host.checkbox,
+            select: host.select,
+            textarea: host.textarea,
+            radio: host.radio,
+            color: host.color,
+            date: host.date,
+            time: host.time,
+          }),
+          (host, form) => {
+            emit(host, 'change', form)
+          }
+        ),
+        render: () => html`<div x-host>
+          <label>Text</label>
+          <input type="text" x-model="text" /><br />
+          <label>Number</label>
+          <input type="number" x-model="number" /><br />
+          <label>Checkbox</label>
+          <input type="checkbox" x-model="checkbox" /><br />
+          <label>Select</label>
+          <select x-model="select">
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option></select
+          ><br />
+          <label>Textarea</label>
+          <textarea x-model="textarea"></textarea><br />
+          <label>Radio</label>
+          <input type="radio" x-model="radio" value="option1" /> Option 1<br />
+          <input type="radio" x-model="radio" value="option2" /> Option 2<br />
+          <label>Color</label>
+          <input type="color" x-model="color" /><br />
+          <label>Date</label>
+          <input type="date" x-model="date" /><br />
+          <label>Time</label>
+          <input type="time" x-model="time" /><br />
+        </div>`,
+      }))
+    </script>
+
+    <test-fixture>
+      <test-x-data></test-x-data>
+    </test-fixture>
+    <br />
+    <!-- <test-x-init></test-x-init>
+  <br>
+  <test-x-model @change="console.log"></test-x-model>
+  <br> -->
+  </body>
+</html>

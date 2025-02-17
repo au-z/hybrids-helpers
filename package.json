@@ -1,6 +1,6 @@
 {
   "name": "@auzmartist/hybrids-helpers",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "module": "./dist/hybrids-helpers.js",
   "exports": {
@@ -27,6 +27,7 @@
     "docgen": "wireit",
     "docs:preview": "pnpm docgen && pnpm dlx http-server --open -p 10000 ./docs",
     "test": "wireit",
+    "test:browser": "wireit",
     "test:once": "vitest run",
     "prepublishOnly": "pnpm docgen && pnpm test:once"
   },
@@ -67,7 +68,11 @@
       ]
     },
     "test": {
-      "command": "vitest"
+      "command": "vitest --workspace=vitest.workspace.ts",
+      "server": true,
+      "dependencies": [
+        "build"
+      ]
     },
     "docgen": {
       "command": "typedoc --out docs src/index.ts",
@@ -85,17 +90,22 @@
   "peerDependencies": {
     "hybrids": "^9.0.0"
   },
+  "optionalDependencies": {
+    "alpinejs": "^3.14.8"
+  },
   "devDependencies": {
+    "@types/alpinejs": "^3.13.11",
     "@types/node": "^22.7.4",
-    "alpinejs": "^3.7.0",
-    "@types/alpinejs": "^3.7.0",
+    "@vitest/browser": "^3.0.5",
+    "alpinejs": "^3.13.11",
     "happy-dom": "^12.10.3",
+    "playwright": "^1.50.1",
     "rollup-plugin-analyzer": "^4.0.0",
-    "typedoc": "^0.25.3",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.7",
-    "vitest": "^1.6.0",
-    "wireit": "^0.14.7"
+    "typedoc": "^0.27.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.5",
+    "wireit": "^0.14.11"
   },
   "pnpm": {
     "peerDependencyRules": {
