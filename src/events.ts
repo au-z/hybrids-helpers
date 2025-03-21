@@ -7,8 +7,12 @@
  * @param init CustomEventInit options to override the defaults (bubbles, composed)
  * @returns void
  */
-export function emit<T>(host: Element, event: string, detail: T, init: CustomEventInit<any> = {}) {
-  host.dispatchEvent(new CustomEvent<T>(event, { detail, bubbles: true, composed: true, ...init }))
+export function emit<T>(host: Element, event: string, detail?: T, init: CustomEventInit<any> = {}) {
+  const eventInit = { bubbles: true, composed: true, ...init }
+  if (detail) {
+    eventInit.detail = detail
+  }
+  host.dispatchEvent(new CustomEvent<T>(event, eventInit))
 }
 
 /**
